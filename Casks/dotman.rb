@@ -3,7 +3,7 @@ cask "dotman" do
   name "dotman"
   desc "Git-backed dotfile workflow manager"
   homepage "https://github.com/christhomas/dotman"
-  version "0.1.0"
+  version "0.1.1"
 
   livecheck do
     skip "Auto-generated on release."
@@ -14,22 +14,22 @@ cask "dotman" do
   on_macos do
     on_intel do
       url "https://github.com/christhomas/dotman/releases/download/v#{version}/dotman_#{version}_darwin_amd64.tar.gz"
-      sha256 "f8a8af24692c29646eb1244c216511e54d0ce45d0bb4aaa8d9c04acca38d4577"
+      sha256 "a45f6c7e7db6b4a6e66960617be020f889d043d5c0dd3a1900d1e764e9342c3c"
     end
     on_arm do
       url "https://github.com/christhomas/dotman/releases/download/v#{version}/dotman_#{version}_darwin_arm64.tar.gz"
-      sha256 "295e18334035016e1a9268256edbc3220a730b72e8b0d2b719e8fc29d6f6a79e"
+      sha256 "4e02010440c1b3e6b927fa25bc50064d41f9da127a38ff041ccc8de0f98ffc64"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/christhomas/dotman/releases/download/v#{version}/dotman_#{version}_linux_amd64.tar.gz"
-      sha256 "a873ffcbb4e44689f2d36bb4b74f6d89a234d8b1c8b6a157bf652a9d53a2a672"
+      sha256 "d6ffb3736622466cadce92d66e588ea1f493fbbd1d695a138ddfe2013b5134f4"
     end
     on_arm do
       url "https://github.com/christhomas/dotman/releases/download/v#{version}/dotman_#{version}_linux_arm64.tar.gz"
-      sha256 "2659d3b339e2d1b669becb4e44d54347003f5564fe52c12e9e074a9edcc9ed83"
+      sha256 "ac63c4cf2b42573c13821ba9061d2a4f0b9b180ba0a3a0b87a10756cccdf08bf"
     end
   end
 
