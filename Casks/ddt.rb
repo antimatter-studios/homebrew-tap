@@ -3,7 +3,7 @@ cask "ddt" do
   name "ddt"
   desc "Docker development tools CLI"
   homepage "https://github.com/antimatter-studios/docker-dev-tools"
-  version "0.1.0"
+  version "0.1.1"
 
   livecheck do
     skip "Auto-generated on release."
@@ -14,23 +14,27 @@ cask "ddt" do
   on_macos do
     on_intel do
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_darwin_amd64.tar.gz"
-      sha256 "e4f593e6c382260d89cfd81e3faf6215319b9fbeeabd6aa6b36b7ce1b8dd3cf4"
+      sha256 "d7dc66ff7eb9b61f93a0997f29548a5798c82faac0f9c40494df35ef8818d92a"
     end
     on_arm do
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_darwin_arm64.tar.gz"
-      sha256 "cadc30e478e87cd137a92f4456a549fab3591aecf77b8585d521be21ea07d2e5"
+      sha256 "411f335d9ab27a914c9866fd6142912d2a3cfbe24396ca8647b5084cb66527ef"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_linux_amd64.tar.gz"
-      sha256 "1876583097a0bf63e884f14efc96635f9df6d873b8ef9460fd62cfb494b07bdd"
+      sha256 "849413d01c4cd32f9dfdecfe441f211f63e54d33765a8fbb8125b6ad9f33620c"
     end
     on_arm do
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_linux_arm64.tar.gz"
-      sha256 "a385a22d71ca97b12b23a9d089a43290c651220739f108657de27607adce1c5c"
+      sha256 "948ae950142c83818a554d1257bb459138ebbd2a4668a74cd08d5fce1fc7d5f9"
     end
+  end
+
+  postflight do
+    xattr -dr com.apple.quarantine "#{staged_path}/ddt"
   end
 
   # No zap stanza required
