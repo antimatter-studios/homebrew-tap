@@ -14,27 +14,27 @@ cask "dotman" do
   on_macos do
     on_intel do
       url "https://github.com/christhomas/dotman/releases/download/v#{version}/dotman_#{version}_darwin_amd64.tar.gz"
-      sha256 "c594aa1bdab91a1d0f5b93c696889a4914caf55e499b761f92cfdb35a4e18d69"
+      sha256 "f8a8af24692c29646eb1244c216511e54d0ce45d0bb4aaa8d9c04acca38d4577"
     end
     on_arm do
       url "https://github.com/christhomas/dotman/releases/download/v#{version}/dotman_#{version}_darwin_arm64.tar.gz"
-      sha256 "d1efb1d7961d270eaa992e20ca14047d3e7ec7e9f2d9539a5a93b1c4fd92764f"
+      sha256 "295e18334035016e1a9268256edbc3220a730b72e8b0d2b719e8fc29d6f6a79e"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/christhomas/dotman/releases/download/v#{version}/dotman_#{version}_linux_amd64.tar.gz"
-      sha256 "8f94bba4c204d09f3fc54914ba0f5f7bc72917fed49c710d0f51019d69001a78"
+      sha256 "a873ffcbb4e44689f2d36bb4b74f6d89a234d8b1c8b6a157bf652a9d53a2a672"
     end
     on_arm do
       url "https://github.com/christhomas/dotman/releases/download/v#{version}/dotman_#{version}_linux_arm64.tar.gz"
-      sha256 "78a13208a5f95dde33eeee106293614445e08badd0e9c70b33d7ba91a3958d70"
+      sha256 "2659d3b339e2d1b669becb4e44d54347003f5564fe52c12e9e074a9edcc9ed83"
     end
   end
 
   postflight do
-    xattr -dr com.apple.quarantine "#{staged_path}/dotman"
+    system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/dotman"]
   end
 
   # No zap stanza required
