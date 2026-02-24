@@ -14,22 +14,22 @@ cask "ddt" do
   on_macos do
     on_intel do
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_darwin_amd64.tar.gz"
-      sha256 "b2293be8e6f972fbe35a109fc70babe7aef746b0adc091586cd2e37791e727e2"
+      sha256 "e4f593e6c382260d89cfd81e3faf6215319b9fbeeabd6aa6b36b7ce1b8dd3cf4"
     end
     on_arm do
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_darwin_arm64.tar.gz"
-      sha256 "26ce5adf5a174a7d5ce0bd2804076258d7d9a651cd2ff839278e0bc9a5c415aa"
+      sha256 "cadc30e478e87cd137a92f4456a549fab3591aecf77b8585d521be21ea07d2e5"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_linux_amd64.tar.gz"
-      sha256 "1f3f25be08515a1c2777b4ad423e9de53550bd8f9975dda3efb5a551b5c257fa"
+      sha256 "1876583097a0bf63e884f14efc96635f9df6d873b8ef9460fd62cfb494b07bdd"
     end
     on_arm do
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_linux_arm64.tar.gz"
-      sha256 "c4cd4cd2e454f1d6fa5287dfc1879846e3793565e3f9d863079bbeccb64b7c63"
+      sha256 "a385a22d71ca97b12b23a9d089a43290c651220739f108657de27607adce1c5c"
     end
   end
 
