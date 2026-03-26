@@ -3,7 +3,7 @@ cask "tacli" do
   name "tacli"
   desc "Team Agentica CLI — inspect and manage the platform"
   homepage "https://github.com/antimatter-studios/teamagentica"
-  version "0.1.0"
+  version "0.2.0"
 
   livecheck do
     skip "Auto-generated on release."
@@ -14,22 +14,22 @@ cask "tacli" do
   on_macos do
     on_intel do
       url "https://github.com/antimatter-studios/teamagentica/releases/download/v#{version}/tacli_#{version}_darwin_amd64.tar.gz"
-      sha256 "44d9355ca21250e2ed54518a5e10e1d7d3476c97b0993fa57875613405961c63"
+      sha256 "d28a90fa405fbde69522d7b241104e7ef05fb00162e0b47338074dc7c89e6684"
     end
     on_arm do
       url "https://github.com/antimatter-studios/teamagentica/releases/download/v#{version}/tacli_#{version}_darwin_arm64.tar.gz"
-      sha256 "06ae16dc2ffc733be96143ffa73635ce8775b97b5e2a71d2180dfd7b2050a1e2"
+      sha256 "cebebfdc5c7979ef971b4aa02a19cb7306ffc545d36d0d2791b215be99805e77"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/antimatter-studios/teamagentica/releases/download/v#{version}/tacli_#{version}_linux_amd64.tar.gz"
-      sha256 "10dccfdf4e7125d6cf4e22f863e90d02adaa78e5f9fb9dce5e031a6f2cfe9af1"
+      sha256 "033bb075212e60ce26d5a0df2ec41eb8bc979f072999611c1663d0967adb6ec6"
     end
     on_arm do
       url "https://github.com/antimatter-studios/teamagentica/releases/download/v#{version}/tacli_#{version}_linux_arm64.tar.gz"
-      sha256 "1cc6cd0e8d91136e9f1fab6c27c66abb117687697cfb9853ebac98882fb0a535"
+      sha256 "4e6f0dd98cbac407ed2d02b801de2045b420694040847bc26cba7edd634e2f32"
     end
   end
 
