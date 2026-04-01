@@ -3,20 +3,12 @@ class Virtiofsd < Formula
   homepage "https://github.com/christhomas/virtiofsd"
   license any_of: ["Apache-2.0", "BSD-3-Clause"]
 
-  on_macos do
-    on_arm do
-      url "https://github.com/christhomas/virtiofsd/releases/download/v#{version}/virtiofsd-#{version}-darwin-arm64.tar.gz"
-      sha256 "PLACEHOLDER"
-    end
-    on_intel do
-      url "https://github.com/christhomas/virtiofsd/releases/download/v#{version}/virtiofsd-#{version}-darwin-amd64.tar.gz"
-      sha256 "PLACEHOLDER"
-    end
-  end
-
+  url "https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v#{version}/virtiofsd-#{version}-darwin-arm64.tar.gz"
+  sha256 "PLACEHOLDER"
   version "1.13.3"
 
   depends_on :macos
+  depends_on arch: :arm64
 
   def install
     bin.install "virtiofsd"

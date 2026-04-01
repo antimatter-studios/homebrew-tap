@@ -3,20 +3,12 @@ class QemuVirtiofs < Formula
   homepage "https://www.qemu.org/"
   license "GPL-2.0-only"
 
-  on_macos do
-    on_arm do
-      url "https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-virtiofs-v#{version}/qemu-virtiofs-#{version}-darwin-arm64.tar.gz"
-      sha256 "PLACEHOLDER"
-    end
-    on_intel do
-      url "https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-virtiofs-v#{version}/qemu-virtiofs-#{version}-darwin-amd64.tar.gz"
-      sha256 "PLACEHOLDER"
-    end
-  end
-
+  url "https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-virtiofs-v#{version}/qemu-virtiofs-#{version}-darwin-arm64.tar.gz"
+  sha256 "PLACEHOLDER"
   version "10.2.2"
 
   depends_on :macos
+  depends_on arch: :arm64
   depends_on "glib"
   depends_on "gnutls"
   depends_on "jpeg-turbo"

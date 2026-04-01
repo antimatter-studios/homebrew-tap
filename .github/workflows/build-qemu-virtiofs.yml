@@ -13,14 +13,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - runner: macos-14      # Apple Silicon
+          - runner: macos-15
             arch: arm64
             target_list: aarch64-softmmu
             artifact: darwin-arm64
-          - runner: macos-13      # Intel
-            arch: x86_64
-            target_list: x86_64-softmmu,aarch64-softmmu
-            artifact: darwin-amd64
 
     runs-on: ${{ matrix.runner }}
 
@@ -62,7 +58,6 @@ jobs:
         run: |
           make DESTDIR=${{ runner.temp }}/install install
 
-          # Create entitlements for HVF
           cat > /tmp/entitlements.plist << 'PLIST'
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -74,7 +69,6 @@ jobs:
           </plist>
           PLIST
 
-          # Codesign all qemu binaries with HVF entitlement
           for bin in ${{ runner.temp }}/install/opt/qemu-virtiofs/bin/qemu-system-*; do
             codesign -s - --entitlements /tmp/entitlements.plist --force "$bin"
           done
@@ -113,7 +107,7 @@ jobs:
           files: artifacts/*.tar.gz
           body: |
             QEMU v${{ inputs.version }} built with `--enable-vhost-user` for macOS virtiofs support.
-            Binaries are codesigned with HVF entitlement.
+            Binaries are codesigned with HVF entitlement (Apple Silicon only).
 
             ## Install via Homebrew
             ```
