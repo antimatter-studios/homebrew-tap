@@ -1,0 +1,79 @@
+name: Build virtiofsd
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g. 1.13.3)'
+        required: true
+        default: '1.13.3'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - runner: macos-14      # Apple Silicon
+            arch: arm64
+            artifact: darwin-arm64
+          - runner: macos-13      # Intel
+            arch: x86_64
+            artifact: darwin-amd64
+
+    runs-on: ${{ matrix.runner }}
+
+    steps:
+      - name: Install Rust
+        uses: dtolnay/rust-action/setup@v1
+
+      - name: Clone virtiofsd
+        run: |
+          git clone --branch cth/macos --depth 1 \
+            https://github.com/christhomas/virtiofsd.git
+
+      - name: Build release binary
+        working-directory: virtiofsd
+        run: cargo build --release
+
+      - name: Package binary
+        run: |
+          mkdir -p dist
+          cp virtiofsd/target/release/virtiofsd dist/
+          cd dist
+          tar czf virtiofsd-${{ inputs.version }}-${{ matrix.artifact }}.tar.gz virtiofsd
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: virtiofsd-${{ matrix.artifact }}
+          path: dist/*.tar.gz
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          repository: christhomas/virtiofsd
+          tag_name: v${{ inputs.version }}
+          name: virtiofsd v${{ inputs.version }}
+          files: artifacts/*.tar.gz
+          body: |
+            virtiofsd v${{ inputs.version }} — macOS port
+
+            ## Install via Homebrew
+            ```
+            brew install antimatter-studios/tap/virtiofsd
+            ```
+        env:
+          GITHUB_TOKEN: ${{ secrets.VIRTIOFSD_RELEASE_TOKEN }}

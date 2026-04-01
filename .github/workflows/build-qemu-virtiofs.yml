@@ -1,0 +1,121 @@
+name: Build QEMU with virtiofs
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'QEMU version (e.g. 10.2.2)'
+        required: true
+        default: '10.2.2'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - runner: macos-14      # Apple Silicon
+            arch: arm64
+            target_list: aarch64-softmmu
+            artifact: darwin-arm64
+          - runner: macos-13      # Intel
+            arch: x86_64
+            target_list: x86_64-softmmu,aarch64-softmmu
+            artifact: darwin-amd64
+
+    runs-on: ${{ matrix.runner }}
+
+    steps:
+      - name: Install dependencies
+        run: |
+          brew install glib gnutls jpeg-turbo libpng libslirp libssh \
+            libusb lzo ncurses pixman snappy vde zstd ninja meson
+
+      - name: Download QEMU source
+        run: |
+          curl -LO https://download.qemu.org/qemu-${{ inputs.version }}.tar.xz
+          tar xf qemu-${{ inputs.version }}.tar.xz
+
+      - name: Configure QEMU
+        working-directory: qemu-${{ inputs.version }}
+        run: |
+          mkdir build && cd build
+          ../configure \
+            --prefix=/opt/qemu-virtiofs \
+            --enable-vhost-user \
+            --disable-vhost-net \
+            --disable-vhost-kernel \
+            --disable-vhost-vdpa \
+            --enable-slirp \
+            --enable-cocoa \
+            --disable-gtk \
+            --disable-sdl \
+            --disable-guest-agent \
+            --disable-bsd-user \
+            --target-list=${{ matrix.target_list }}
+
+      - name: Build QEMU
+        working-directory: qemu-${{ inputs.version }}/build
+        run: make -j$(sysctl -n hw.ncpu)
+
+      - name: Install and codesign
+        working-directory: qemu-${{ inputs.version }}/build
+        run: |
+          make DESTDIR=${{ runner.temp }}/install install
+
+          # Create entitlements for HVF
+          cat > /tmp/entitlements.plist << 'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>com.apple.security.hypervisor</key>
+              <true/>
+          </dict>
+          </plist>
+          PLIST
+
+          # Codesign all qemu binaries with HVF entitlement
+          for bin in ${{ runner.temp }}/install/opt/qemu-virtiofs/bin/qemu-system-*; do
+            codesign -s - --entitlements /tmp/entitlements.plist --force "$bin"
+          done
+
+      - name: Package
+        run: |
+          mkdir -p dist
+          cd ${{ runner.temp }}/install/opt/qemu-virtiofs
+          tar czf ${{ github.workspace }}/dist/qemu-virtiofs-${{ inputs.version }}-${{ matrix.artifact }}.tar.gz \
+            bin/ share/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-virtiofs-${{ matrix.artifact }}
+          path: dist/*.tar.gz
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: qemu-virtiofs-v${{ inputs.version }}
+          name: QEMU virtiofs v${{ inputs.version }}
+          files: artifacts/*.tar.gz
+          body: |
+            QEMU v${{ inputs.version }} built with `--enable-vhost-user` for macOS virtiofs support.
+            Binaries are codesigned with HVF entitlement.
+
+            ## Install via Homebrew
+            ```
+            brew install antimatter-studios/tap/qemu-virtiofs
+            ```

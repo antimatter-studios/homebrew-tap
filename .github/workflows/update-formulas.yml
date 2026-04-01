@@ -1,0 +1,79 @@
+name: Update formula checksums
+
+on:
+  workflow_dispatch:
+    inputs:
+      formula:
+        description: 'Formula to update (virtiofsd or qemu-virtiofs)'
+        required: true
+        type: choice
+        options:
+          - virtiofsd
+          - qemu-virtiofs
+      version:
+        description: 'Version to update to'
+        required: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update virtiofsd formula
+        if: inputs.formula == 'virtiofsd'
+        run: |
+          VER="${{ inputs.version }}"
+          BASE="https://github.com/christhomas/virtiofsd/releases/download/v${VER}"
+
+          ARM_URL="${BASE}/virtiofsd-${VER}-darwin-arm64.tar.gz"
+          AMD_URL="${BASE}/virtiofsd-${VER}-darwin-amd64.tar.gz"
+
+          ARM_SHA=$(curl -sL "$ARM_URL" | sha256sum | cut -d' ' -f1)
+          AMD_SHA=$(curl -sL "$AMD_URL" | sha256sum | cut -d' ' -f1)
+
+          sed -i "s/version \".*\"/version \"${VER}\"/" Formula/virtiofsd.rb
+
+          # Update arm64 sha256 (first PLACEHOLDER or sha)
+          python3 -c "
+          import re
+          with open('Formula/virtiofsd.rb') as f: t = f.read()
+          parts = t.split('sha256')
+          parts[1] = re.sub(r'\"[^\"]+\"', '\"${ARM_SHA}\"', parts[1], count=1)
+          parts[2] = re.sub(r'\"[^\"]+\"', '\"${AMD_SHA}\"', parts[2], count=1)
+          with open('Formula/virtiofsd.rb', 'w') as f: f.write('sha256'.join(parts))
+          "
+
+      - name: Update qemu-virtiofs formula
+        if: inputs.formula == 'qemu-virtiofs'
+        run: |
+          VER="${{ inputs.version }}"
+          BASE="https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-virtiofs-v${VER}"
+
+          ARM_URL="${BASE}/qemu-virtiofs-${VER}-darwin-arm64.tar.gz"
+          AMD_URL="${BASE}/qemu-virtiofs-${VER}-darwin-amd64.tar.gz"
+
+          ARM_SHA=$(curl -sL "$ARM_URL" | sha256sum | cut -d' ' -f1)
+          AMD_SHA=$(curl -sL "$AMD_URL" | sha256sum | cut -d' ' -f1)
+
+          sed -i "s/version \".*\"/version \"${VER}\"/" Formula/qemu-virtiofs.rb
+
+          python3 -c "
+          import re
+          with open('Formula/qemu-virtiofs.rb') as f: t = f.read()
+          parts = t.split('sha256')
+          parts[1] = re.sub(r'\"[^\"]+\"', '\"${ARM_SHA}\"', parts[1], count=1)
+          parts[2] = re.sub(r'\"[^\"]+\"', '\"${AMD_SHA}\"', parts[2], count=1)
+          with open('Formula/qemu-virtiofs.rb', 'w') as f: f.write('sha256'.join(parts))
+          "
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/
+          git commit -m "Update ${{ inputs.formula }} to v${{ inputs.version }}"
+          git push
