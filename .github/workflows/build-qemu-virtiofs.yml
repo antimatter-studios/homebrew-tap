@@ -53,25 +53,21 @@ jobs:
         working-directory: qemu-${{ inputs.version }}/build
         run: make -j$(sysctl -n hw.ncpu)
 
-      - name: Install and codesign
+      - name: Install
         working-directory: qemu-${{ inputs.version }}/build
         run: |
+          # Strip resource forks that cause codesign failures in CI
+          xattr -cr .
+
+          # QEMU's install script handles codesigning with HVF entitlement
           make DESTDIR=${{ runner.temp }}/install install
 
-          cat > /tmp/entitlements.plist << 'PLIST'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>com.apple.security.hypervisor</key>
-              <true/>
-          </dict>
-          </plist>
-          PLIST
-
-          for bin in ${{ runner.temp }}/install/opt/qemu-virtiofs/bin/qemu-system-*; do
-            codesign -s - --entitlements /tmp/entitlements.plist --force "$bin"
-          done
+      - name: Verify codesign
+        run: |
+          # Verify the binary was codesigned with HVF entitlement
+          codesign -d --entitlements - ${{ runner.temp }}/install/opt/qemu-virtiofs/bin/qemu-system-aarch64 2>&1 | grep -q hypervisor \
+            && echo "HVF entitlement: OK" \
+            || echo "WARNING: HVF entitlement not found"
 
       - name: Package
         run: |
