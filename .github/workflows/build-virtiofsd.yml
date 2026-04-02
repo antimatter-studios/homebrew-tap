@@ -16,6 +16,13 @@ jobs:
           - runner: macos-15
             arch: arm64
             artifact: darwin-arm64
+            repo: https://github.com/christhomas/virtiofsd.git
+            branch: cth/macos
+          - runner: ubuntu-latest
+            arch: amd64
+            artifact: linux-amd64
+            repo: https://github.com/christhomas/virtiofsd.git
+            branch: cth/macos
 
     runs-on: ${{ matrix.runner }}
 
@@ -25,8 +32,12 @@ jobs:
 
       - name: Clone virtiofsd
         run: |
-          git clone --branch cth/macos --depth 1 \
-            https://github.com/christhomas/virtiofsd.git
+          git clone --branch ${{ matrix.branch }} --depth 1 \
+            ${{ matrix.repo }}
+
+      - name: Install Linux build dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y -qq libseccomp-dev libcap-ng-dev
 
       - name: Build release binary
         working-directory: virtiofsd
