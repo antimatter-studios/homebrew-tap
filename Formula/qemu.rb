@@ -5,7 +5,7 @@ class Qemu < Formula
 
   version "10.2.2"
   url "https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-v#{version}/qemu-#{version}-darwin-arm64.tar.gz"
-  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+  sha256 "5835d8e1455b6011ed5d2534ccce6486c0d2a3405e79ff92d686ed0d8d707ccf"
 
   depends_on :macos
   depends_on arch: :arm64
