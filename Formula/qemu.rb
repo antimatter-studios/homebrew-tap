@@ -3,9 +3,9 @@ class Qemu < Formula
   homepage "https://www.qemu.org/"
   license "GPL-2.0-only"
 
-  url "https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-v#{version}/qemu-#{version}-darwin-arm64.tar.gz"
-  sha256 "PLACEHOLDER"
   version "10.2.2"
+  url "https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-v#{version}/qemu-#{version}-darwin-arm64.tar.gz"
+  sha256 "87d7601f57f06e44c1c178baea77e93d353050f158a9a633ede9285ce92362a7"
 
   depends_on :macos
   depends_on arch: :arm64

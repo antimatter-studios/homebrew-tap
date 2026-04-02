@@ -3,9 +3,9 @@ class Virtiofsd < Formula
   homepage "https://github.com/christhomas/virtiofsd"
   license any_of: ["Apache-2.0", "BSD-3-Clause"]
 
-  url "https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v#{version}/virtiofsd-#{version}-darwin-arm64.tar.gz"
-  sha256 "PLACEHOLDER"
   version "1.13.3"
+  url "https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v#{version}/virtiofsd-#{version}-darwin-arm64.tar.gz"
+  sha256 "fa37691b21db34733edd88f9e7cfed64b18684cd10f063cdc390030985bb5078"
 
   depends_on :macos
   depends_on arch: :arm64
