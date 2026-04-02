@@ -15,7 +15,7 @@ jobs:
         include:
           - runner: macos-15
             arch: arm64
-            target_list: aarch64-softmmu
+            target_list: aarch64-softmmu,arm-softmmu
             artifact: darwin-arm64
 
     runs-on: ${{ matrix.runner }}
