@@ -5,7 +5,7 @@ class Virtiofsd < Formula
 
   version "1.13.4"
   url "https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v#{version}/virtiofsd-#{version}-darwin-arm64.tar.gz"
-  sha256 "fa37691b21db34733edd88f9e7cfed64b18684cd10f063cdc390030985bb5078"
+  sha256 "289c451a218457b0c485f5223f3bbb2bb84a4e50733ee7e7abde77f85f5be709"
 
   depends_on :macos
   depends_on arch: :arm64
