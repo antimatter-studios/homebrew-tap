@@ -62,5 +62,11 @@ class Qemu < Formula
 
   test do
     assert_match "vhost-user-fs", shell_output("#{bin}/qemu-system-aarch64 -device help 2>&1")
+
+    virtiofsd_bin = which("virtiofsd")
+    if virtiofsd_bin
+      assert_match "virtiofsd", shell_output("#{virtiofsd_bin} --version 2>&1"),
+        "virtiofsd is installed but not runnable."
+    end
   end
 end

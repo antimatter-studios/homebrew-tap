@@ -35,5 +35,13 @@ class Virtiofsd < Formula
 
   test do
     assert_match "virtiofsd", shell_output("#{bin}/virtiofsd --help 2>&1")
+
+    qemu_bin = which("qemu-system-aarch64")
+    if qemu_bin
+      devices = shell_output("#{qemu_bin} -device help 2>&1")
+      assert_match "vhost-user-fs", devices,
+        "QEMU is installed but lacks vhost-user-fs support. " \
+        "Install a compatible QEMU: brew install antimatter-studios/tap/qemu"
+    end
   end
 end
