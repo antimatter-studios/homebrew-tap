@@ -1,4 +1,4 @@
-name: Build QEMU with virtiofs
+name: Build QEMU
 
 on:
   workflow_dispatch:
@@ -36,7 +36,7 @@ jobs:
         run: |
           mkdir build && cd build
           ../configure \
-            --prefix=/opt/qemu-virtiofs \
+            --prefix=/opt/qemu \
             --enable-vhost-user \
             --disable-vhost-net \
             --disable-vhost-kernel \
@@ -65,21 +65,21 @@ jobs:
       - name: Verify codesign
         run: |
           # Verify the binary was codesigned with HVF entitlement
-          codesign -d --entitlements - ${{ runner.temp }}/install/opt/qemu-virtiofs/bin/qemu-system-aarch64 2>&1 | grep -q hypervisor \
+          codesign -d --entitlements - ${{ runner.temp }}/install/opt/qemu/bin/qemu-system-aarch64 2>&1 | grep -q hypervisor \
             && echo "HVF entitlement: OK" \
             || echo "WARNING: HVF entitlement not found"
 
       - name: Package
         run: |
           mkdir -p dist
-          cd ${{ runner.temp }}/install/opt/qemu-virtiofs
-          tar czf ${{ github.workspace }}/dist/qemu-virtiofs-${{ inputs.version }}-${{ matrix.artifact }}.tar.gz \
+          cd ${{ runner.temp }}/install/opt/qemu
+          tar czf ${{ github.workspace }}/dist/qemu-${{ inputs.version }}-${{ matrix.artifact }}.tar.gz \
             bin/ share/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: qemu-virtiofs-${{ matrix.artifact }}
+          name: qemu-${{ matrix.artifact }}
           path: dist/*.tar.gz
 
   release:
@@ -98,8 +98,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: qemu-virtiofs-v${{ inputs.version }}
-          name: QEMU virtiofs v${{ inputs.version }}
+          tag_name: qemu-v${{ inputs.version }}
+          name: QEMU v${{ inputs.version }}
           files: artifacts/*.tar.gz
           body: |
             QEMU v${{ inputs.version }} built with `--enable-vhost-user` for macOS virtiofs support.
@@ -107,5 +107,5 @@ jobs:
 
             ## Install via Homebrew
             ```
-            brew install antimatter-studios/tap/qemu-virtiofs
+            brew install antimatter-studios/tap/qemu
             ```

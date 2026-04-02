@@ -20,7 +20,7 @@ class Virtiofsd < Formula
       The standard Homebrew QEMU does not include this.
 
       Install the patched QEMU from this tap:
-        brew install antimatter-studios/tap/qemu-virtiofs
+        brew install antimatter-studios/tap/qemu
 
       Usage:
         # Start virtiofsd

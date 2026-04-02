@@ -1,9 +1,9 @@
-class QemuVirtiofs < Formula
-  desc "QEMU with vhost-user-fs support for macOS virtiofs folder sharing"
+class Qemu < Formula
+  desc "QEMU emulator with vhost-user-fs support for macOS"
   homepage "https://www.qemu.org/"
   license "GPL-2.0-only"
 
-  url "https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-virtiofs-v#{version}/qemu-virtiofs-#{version}-darwin-arm64.tar.gz"
+  url "https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-v#{version}/qemu-#{version}-darwin-arm64.tar.gz"
   sha256 "PLACEHOLDER"
   version "10.2.2"
 
