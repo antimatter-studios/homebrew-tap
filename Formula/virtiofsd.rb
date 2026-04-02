@@ -15,22 +15,38 @@ class Virtiofsd < Formula
   end
 
   def caveats
-    <<~EOS
-      virtiofsd requires QEMU built with vhost-user-fs support.
-      The standard Homebrew QEMU does not include this.
+    msg = ""
 
-      Install the patched QEMU from this tap:
-        brew install antimatter-studios/tap/qemu
+    qemu_bin = which("qemu-system-aarch64")
+    if qemu_bin.nil?
+      msg += <<~EOS
+        WARNING: QEMU is not installed. virtiofsd requires QEMU built with
+        vhost-user-fs support. The standard Homebrew QEMU does not include this.
 
+        Install the compatible QEMU from this tap:
+          brew install antimatter-studios/tap/qemu
+
+      EOS
+    elsif !`#{qemu_bin} -device help 2>&1`.include?("vhost-user-fs")
+      msg += <<~EOS
+        WARNING: Your installed QEMU lacks vhost-user-fs support.
+        virtiofsd will not work with it.
+
+        Install the compatible QEMU from this tap:
+          brew install antimatter-studios/tap/qemu
+
+      EOS
+    end
+
+    msg += <<~EOS
       Usage:
-        # Start virtiofsd
         virtiofsd --socket-path=/tmp/virtiofsd.sock \\
                   --shared-dir=/path/to/share \\
                   --sandbox none \\
                   --inode-file-handles=never
-
-        # Start QEMU with virtiofs device (see qemu-virtiofs caveats)
     EOS
+
+    msg
   end
 
   test do
