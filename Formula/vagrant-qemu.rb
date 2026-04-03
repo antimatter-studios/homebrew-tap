@@ -15,17 +15,10 @@ class VagrantQemu < Formula
     libexec.install "vagrant-qemu-#{version}.gem"
   end
 
-  def post_install
-    system "vagrant", "plugin", "install", libexec/"vagrant-qemu-#{version}.gem"
-  rescue => e
-    opoo "Could not install Vagrant plugin automatically: #{e.message}"
-    opoo "Install manually: vagrant plugin install #{libexec}/vagrant-qemu-#{version}.gem"
-  end
-
   def caveats
     <<~EOS
-      This formula installs the vagrant-qemu plugin with virtiofs support.
-      It requires Vagrant to be installed first.
+      To complete installation, run:
+        vagrant plugin install #{opt_libexec}/vagrant-qemu-#{version}.gem
 
       Dependencies (installed automatically):
         - antimatter-studios/tap/qemu (QEMU with vhost-user-fs support)

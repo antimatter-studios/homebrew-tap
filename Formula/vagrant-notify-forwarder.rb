@@ -13,20 +13,10 @@ class VagrantNotifyForwarder < Formula
     libexec.install "vagrant-notify-forwarder2-#{version}.gem"
   end
 
-  def post_install
-    system "vagrant", "plugin", "install", libexec/"vagrant-notify-forwarder2-#{version}.gem"
-  rescue => e
-    opoo "Could not install Vagrant plugin automatically: #{e.message}"
-    opoo "Install manually: vagrant plugin install #{libexec}/vagrant-notify-forwarder2-#{version}.gem"
-  end
-
   def caveats
     <<~EOS
-      This formula installs the vagrant-notify-forwarder2 plugin.
-      It requires Vagrant to be installed first.
-
-      If the plugin was not installed automatically, run:
-        vagrant plugin install #{libexec}/vagrant-notify-forwarder2-#{version}.gem
+      To complete installation, run:
+        vagrant plugin install #{opt_libexec}/vagrant-notify-forwarder2-#{version}.gem
     EOS
   end
 
