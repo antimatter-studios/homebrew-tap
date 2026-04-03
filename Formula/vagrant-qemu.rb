@@ -15,9 +15,19 @@ class VagrantQemu < Formula
     libexec.install "vagrant-qemu-#{version}.gem"
   end
 
+  def post_install
+    user = ENV["USER"] || ENV["LOGNAME"] || `stat -f '%Su' #{Dir.home}`.strip
+    system "sudo", "-u", user, "vagrant", "plugin", "install", libexec/"vagrant-qemu-#{version}.gem"
+  rescue => e
+    opoo "Could not install Vagrant plugin automatically: #{e.message}"
+    opoo "Install manually: vagrant plugin install #{opt_libexec}/vagrant-qemu-#{version}.gem"
+  end
+
   def caveats
     <<~EOS
-      To complete installation, run:
+      This formula installs the vagrant-qemu plugin with virtiofs support.
+
+      If the plugin was not installed automatically, run:
         vagrant plugin install #{opt_libexec}/vagrant-qemu-#{version}.gem
 
       Dependencies (installed automatically):

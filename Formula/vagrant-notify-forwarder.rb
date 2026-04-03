@@ -13,9 +13,20 @@ class VagrantNotifyForwarder < Formula
     libexec.install "vagrant-notify-forwarder2-#{version}.gem"
   end
 
+  def post_install
+    # Run as the owning user to avoid permission issues with ~/.vagrant.d/
+    user = ENV["USER"] || ENV["LOGNAME"] || `stat -f '%Su' #{Dir.home}`.strip
+    system "sudo", "-u", user, "vagrant", "plugin", "install", libexec/"vagrant-notify-forwarder2-#{version}.gem"
+  rescue => e
+    opoo "Could not install Vagrant plugin automatically: #{e.message}"
+    opoo "Install manually: vagrant plugin install #{opt_libexec}/vagrant-notify-forwarder2-#{version}.gem"
+  end
+
   def caveats
     <<~EOS
-      To complete installation, run:
+      This formula installs the vagrant-notify-forwarder2 plugin.
+
+      If the plugin was not installed automatically, run:
         vagrant plugin install #{opt_libexec}/vagrant-notify-forwarder2-#{version}.gem
     EOS
   end
