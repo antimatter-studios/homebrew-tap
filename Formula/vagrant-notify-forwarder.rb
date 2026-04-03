@@ -43,6 +43,14 @@ class VagrantNotifyForwarder < Formula
         ohai "Can write to #{label}: YES"
       rescue => e
         ohai "Can write to #{label}: NO (#{e.class}: #{e.message})"
+        # Try via sudo
+        begin
+          system "sudo", "-u", ENV["USER"], "touch", path
+          File.delete(path) if File.exist?(path)
+          ohai "Can sudo write to #{label}: YES"
+        rescue => e2
+          ohai "Can sudo write to #{label}: NO (#{e2.class}: #{e2.message})"
+        end
       end
     end
 
