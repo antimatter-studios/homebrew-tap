@@ -18,35 +18,8 @@ class VagrantNotifyForwarder < Formula
   end
 
   def post_install
-    vagrant_home = File.expand_path("~/.vagrant.d")
-    gem_name = "vagrant-notify-forwarder2"
-
-    # Detect vagrant's ruby version
-    ruby_ver = Dir.glob("#{vagrant_home}/gems/*").map { |d| File.basename(d) }.sort.last
-    return opoo("No Vagrant gem directory found") unless ruby_ver
-
-    gem_dir = "#{vagrant_home}/gems/#{ruby_ver}"
-
-    # Install gem into Vagrant's gem directory
-    system "/opt/vagrant/embedded/bin/gem", "install",
-      libexec/"#{gem_name}-#{version}.gem",
-      "--install-dir", gem_dir,
-      "--no-document"
-
-    # Update plugins.json
-    require "json"
-    plugins_file = "#{vagrant_home}/plugins.json"
-    plugins = File.exist?(plugins_file) ? JSON.parse(File.read(plugins_file)) : { "version" => "1", "installed" => {} }
-    plugins["installed"][gem_name] = {
-      "ruby_version" => ruby_ver,
-      "vagrant_version" => "2.4.9",
-      "gem_version" => version.to_s,
-      "require" => "",
-      "sources" => [],
-      "installed_gem_version" => version.to_s,
-      "env_local" => false,
-    }
-    File.write(plugins_file, JSON.pretty_generate(plugins))
+    ENV["PATH"] = "/opt/vagrant/bin:/opt/homebrew/bin:/usr/local/bin:#{ENV["PATH"]}"
+    system "vagrant", "plugin", "install", libexec/"vagrant-notify-forwarder2-#{version}.gem"
   end
 
   def caveats
