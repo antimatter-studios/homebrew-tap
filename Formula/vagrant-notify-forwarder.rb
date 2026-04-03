@@ -27,14 +27,23 @@ class VagrantNotifyForwarder < Formula
     ohai "~/.vagrant.d exists: #{File.directory?(File.expand_path("~/.vagrant.d"))}"
     ohai "~/.vagrant.d writable: #{File.writable?(File.expand_path("~/.vagrant.d"))}"
 
-    # Try to write a test file
-    test_file = File.expand_path("~/.vagrant.d/brew_post_install_test")
-    begin
-      File.write(test_file, "test")
-      File.delete(test_file)
-      ohai "Can write to ~/.vagrant.d: YES"
-    rescue => e
-      ohai "Can write to ~/.vagrant.d: NO (#{e.message})"
+    # Try to write test files in various locations
+    test_paths = {
+      "~/.vagrant.d" => File.expand_path("~/.vagrant.d/brew_test"),
+      "$HOME" => File.expand_path("~/brew_test"),
+      "$HOME/.config" => File.expand_path("~/.config/brew_test"),
+      "/tmp" => "/tmp/brew_test",
+      "cellar" => "#{libexec}/brew_test",
+    }
+    test_paths.each do |label, path|
+      begin
+        FileUtils.mkdir_p(File.dirname(path))
+        File.write(path, "test")
+        File.delete(path)
+        ohai "Can write to #{label}: YES"
+      rescue => e
+        ohai "Can write to #{label}: NO (#{e.class}: #{e.message})"
+      end
     end
 
     # Try vagrant with full PATH
