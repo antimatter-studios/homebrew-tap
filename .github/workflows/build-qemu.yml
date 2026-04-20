@@ -17,7 +17,7 @@ jobs:
             arch: arm64
             artifact: darwin-arm64
             qemu_binary: qemu-system-aarch64
-          - runner: macos-13
+          - runner: macos-15-intel
             arch: x86_64
             artifact: darwin-x86_64
             qemu_binary: qemu-system-x86_64
