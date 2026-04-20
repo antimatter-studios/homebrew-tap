@@ -4,11 +4,19 @@ class Virtiofsd < Formula
   license any_of: ["Apache-2.0", "BSD-3-Clause"]
 
   version "1.13.6"
-  url "https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v#{version}/virtiofsd-#{version}-darwin-arm64.tar.gz"
-  sha256 "d6cacb888adcf02c10f03f283cd6f7684a4d93a2fb45a756a1b6b4824988a649"
+
+  on_macos do
+    on_arm do
+      url "https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v#{version}/virtiofsd-#{version}-darwin-arm64.tar.gz"
+      sha256 "d6cacb888adcf02c10f03f283cd6f7684a4d93a2fb45a756a1b6b4824988a649"
+    end
+    on_intel do
+      url "https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v#{version}/virtiofsd-#{version}-darwin-x86_64.tar.gz"
+      sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+    end
+  end
 
   depends_on :macos
-  depends_on arch: :arm64
 
   def install
     bin.install "virtiofsd"
@@ -17,7 +25,8 @@ class Virtiofsd < Formula
   def caveats
     msg = ""
 
-    qemu_bin = which("qemu-system-aarch64")
+    qemu_name = Hardware::CPU.arm? ? "qemu-system-aarch64" : "qemu-system-x86_64"
+    qemu_bin = which(qemu_name)
     if qemu_bin.nil?
       msg += <<~EOS
         WARNING: QEMU is not installed. virtiofsd requires QEMU built with
@@ -52,7 +61,8 @@ class Virtiofsd < Formula
   test do
     assert_match "virtiofsd", shell_output("#{bin}/virtiofsd --help 2>&1")
 
-    qemu_bin = which("qemu-system-aarch64")
+    qemu_name = Hardware::CPU.arm? ? "qemu-system-aarch64" : "qemu-system-x86_64"
+    qemu_bin = which(qemu_name)
     if qemu_bin
       devices = shell_output("#{qemu_bin} -device help 2>&1")
       assert_match "vhost-user-fs", devices,

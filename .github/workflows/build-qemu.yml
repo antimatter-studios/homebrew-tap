@@ -16,6 +16,11 @@ jobs:
           - runner: macos-15
             arch: arm64
             artifact: darwin-arm64
+            qemu_binary: qemu-system-aarch64
+          - runner: macos-13
+            arch: x86_64
+            artifact: darwin-x86_64
+            qemu_binary: qemu-system-x86_64
 
     runs-on: ${{ matrix.runner }}
 
@@ -63,7 +68,7 @@ jobs:
       - name: Verify codesign
         run: |
           # Verify the binary was codesigned with HVF entitlement
-          codesign -d --entitlements - ${{ runner.temp }}/install/opt/qemu/bin/qemu-system-aarch64 2>&1 | grep -q hypervisor \
+          codesign -d --entitlements - ${{ runner.temp }}/install/opt/qemu/bin/${{ matrix.qemu_binary }} 2>&1 | grep -q hypervisor \
             && echo "HVF entitlement: OK" \
             || echo "WARNING: HVF entitlement not found"
 
@@ -101,7 +106,7 @@ jobs:
           files: artifacts/*.tar.gz
           body: |
             QEMU v${{ inputs.version }} built with `--enable-vhost-user` for macOS virtiofs support.
-            Binaries are codesigned with HVF entitlement (Apple Silicon only).
+            Binaries are codesigned with HVF entitlement (Apple Silicon and Intel).
 
             ## Install via Homebrew
             ```
