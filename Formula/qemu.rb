@@ -4,11 +4,19 @@ class Qemu < Formula
   license "GPL-2.0-only"
 
   version "10.2.2"
-  url "https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-v#{version}/qemu-#{version}-darwin-arm64.tar.gz"
-  sha256 "5835d8e1455b6011ed5d2534ccce6486c0d2a3405e79ff92d686ed0d8d707ccf"
+
+  on_macos do
+    on_arm do
+      url "https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-v#{version}/qemu-#{version}-darwin-arm64.tar.gz"
+      sha256 "94255a013702e972f43dff04b51e66f67e08953839a58e1ab56d3d6b36f6f068"
+    end
+    on_intel do
+      url "https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-v#{version}/qemu-#{version}-darwin-x86_64.tar.gz"
+      sha256 "ee156046c78e10f20f19a83b5435911a5c305e9cc7a4eeb8afd4bc8ac3eebf25"
+    end
+  end
 
   depends_on :macos
-  depends_on arch: :arm64
   depends_on "glib"
   depends_on "gnutls"
   depends_on "jpeg-turbo"
@@ -31,12 +39,16 @@ class Qemu < Formula
   end
 
   def caveats
+    qemu_bin = Hardware::CPU.arm? ? "qemu-system-aarch64" : "qemu-system-x86_64"
+    machine_flags = Hardware::CPU.arm? ? "-M virt,highmem=on" : "-M q35"
+    bios_line = Hardware::CPU.arm? ? "-bios #{share}/qemu/edk2-aarch64-code.fd \\\n          " : ""
+
     <<~EOS
       This is QEMU built with --enable-vhost-user for virtiofs support.
       It conflicts with the standard Homebrew QEMU formula.
 
       To verify you have the virtiofs-enabled build:
-        qemu-system-aarch64 -device help 2>&1 | grep vhost-user-fs
+        #{qemu_bin} -device help 2>&1 | grep vhost-user-fs
 
       Usage with virtiofsd:
         # Terminal 1: Start virtiofsd
@@ -45,10 +57,9 @@ class Qemu < Formula
                   --sandbox none --inode-file-handles=never
 
         # Terminal 2: Start QEMU
-        qemu-system-aarch64 \\
-          -M virt,highmem=on -accel hvf -cpu host -m 4G -smp 4 \\
-          -bios #{share}/qemu/edk2-aarch64-code.fd \\
-          -drive if=virtio,file=disk.qcow2 \\
+        #{qemu_bin} \\
+          #{machine_flags} -accel hvf -cpu host -m 4G -smp 4 \\
+          #{bios_line}-drive if=virtio,file=disk.qcow2 \\
           -object memory-backend-file,id=mem,size=4G,mem-path=/tmp/qemu-mem,share=on \\
           -numa node,memdev=mem \\
           -chardev socket,id=vfs,path=/tmp/virtiofsd.sock \\
@@ -61,7 +72,8 @@ class Qemu < Formula
   end
 
   test do
-    assert_match "vhost-user-fs", shell_output("#{bin}/qemu-system-aarch64 -device help 2>&1")
+    qemu_bin = Hardware::CPU.arm? ? "qemu-system-aarch64" : "qemu-system-x86_64"
+    assert_match "vhost-user-fs", shell_output("#{bin}/#{qemu_bin} -device help 2>&1")
 
     virtiofsd_bin = which("virtiofsd")
     if virtiofsd_bin

@@ -18,6 +18,11 @@ jobs:
             artifact: darwin-arm64
             repo: https://github.com/christhomas/virtiofsd.git
             branch: cth/macos
+          - runner: macos-15-intel
+            arch: x86_64
+            artifact: darwin-x86_64
+            repo: https://github.com/christhomas/virtiofsd.git
+            branch: cth/macos
           - runner: ubuntu-latest
             arch: amd64
             artifact: linux-amd64
@@ -76,7 +81,7 @@ jobs:
           name: virtiofsd v${{ inputs.version }}
           files: artifacts/*.tar.gz
           body: |
-            virtiofsd v${{ inputs.version }} — macOS port (Apple Silicon)
+            virtiofsd v${{ inputs.version }} — macOS port (Apple Silicon and Intel)
 
             ## Install via Homebrew
             ```
