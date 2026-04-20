@@ -8,11 +8,11 @@ class Qemu < Formula
   on_macos do
     on_arm do
       url "https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-v#{version}/qemu-#{version}-darwin-arm64.tar.gz"
-      sha256 "5835d8e1455b6011ed5d2534ccce6486c0d2a3405e79ff92d686ed0d8d707ccf"
+      sha256 "94255a013702e972f43dff04b51e66f67e08953839a58e1ab56d3d6b36f6f068"
     end
     on_intel do
       url "https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-v#{version}/qemu-#{version}-darwin-x86_64.tar.gz"
-      sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+      sha256 "ee156046c78e10f20f19a83b5435911a5c305e9cc7a4eeb8afd4bc8ac3eebf25"
     end
   end
 
