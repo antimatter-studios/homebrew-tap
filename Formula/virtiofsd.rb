@@ -8,11 +8,11 @@ class Virtiofsd < Formula
   on_macos do
     on_arm do
       url "https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v#{version}/virtiofsd-#{version}-darwin-arm64.tar.gz"
-      sha256 "d6cacb888adcf02c10f03f283cd6f7684a4d93a2fb45a756a1b6b4824988a649"
+      sha256 "70d8fe50da8942a4ff9f404eac1cf3f8bf078caf7a3cfbd69cd75179d9298c7d"
     end
     on_intel do
       url "https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v#{version}/virtiofsd-#{version}-darwin-x86_64.tar.gz"
-      sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+      sha256 "e9c903fc3a7c8adea1b1d8d171b30b1a62f962e60e05f34cc8ce8e915a13c069"
     end
   end
 
