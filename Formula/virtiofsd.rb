@@ -3,16 +3,16 @@ class Virtiofsd < Formula
   homepage "https://github.com/christhomas/virtiofsd"
   license any_of: ["Apache-2.0", "BSD-3-Clause"]
 
-  version "1.13.6"
+  version "1.13.7"
 
   on_macos do
     on_arm do
       url "https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v#{version}/virtiofsd-#{version}-darwin-arm64.tar.gz"
-      sha256 "70d8fe50da8942a4ff9f404eac1cf3f8bf078caf7a3cfbd69cd75179d9298c7d"
+      sha256 "fedd4b3590fa1944c0a16fd4b67b49f6af8e098b3f48fa5dabddc4e1d61d24ff"
     end
     on_intel do
       url "https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v#{version}/virtiofsd-#{version}-darwin-x86_64.tar.gz"
-      sha256 "e9c903fc3a7c8adea1b1d8d171b30b1a62f962e60e05f34cc8ce8e915a13c069"
+      sha256 "a5be5a1a14f35a54e45303d032c9926dc2d2f507b375e95d0b4414ba54356f9d"
     end
   end
 
