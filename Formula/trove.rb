@@ -47,7 +47,7 @@ class Trove < Formula
     # `trove --version` exercises clap's auto-generated --version path.
     assert_match version.to_s, shell_output("#{bin}/trove --version")
     # `troved` exists and is executable.
-    assert_predicate bin/"troved", :exist?
+    assert_path_exists bin/"troved"
     assert_predicate bin/"troved", :executable?
   end
 end
