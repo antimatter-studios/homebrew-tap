@@ -17,12 +17,12 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-
     steps:
+      # Use the PAT (not GITHUB_TOKEN): the org blocks Actions from opening PRs,
+      # and main is push-protected, so we land the bump through a PAT-authored PR.
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
 
       - name: Update virtiofsd formula
         if: inputs.formula == 'virtiofsd'
@@ -54,9 +54,13 @@ jobs:
 
       - name: Open PR and squash-merge
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
         run: |
           set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::HOMEBREW_TAP_TOKEN secret is required (the org blocks GITHUB_TOKEN from opening PRs)."
+            exit 1
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
