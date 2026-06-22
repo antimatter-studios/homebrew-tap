@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
@@ -51,10 +52,43 @@ jobs:
           sed -i "/darwin-arm64/{n;s/sha256 \".*\"/sha256 \"${ARM_SHA}\"/;}" Formula/qemu.rb
           sed -i "/darwin-x86_64/{n;s/sha256 \".*\"/sha256 \"${X86_SHA}\"/;}" Formula/qemu.rb
 
-      - name: Commit and push
+      - name: Open PR and squash-merge
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet -- Formula/; then
+            echo "No formula change; nothing to do."
+            exit 0
+          fi
+
+          # main is push-protected (require PR), so land the bump through an
+          # auto-merged PR rather than a direct push.
+          BRANCH="update-${{ inputs.formula }}-${{ inputs.version }}"
+          git switch -c "${BRANCH}"
           git add Formula/
           git commit -m "Update ${{ inputs.formula }} to v${{ inputs.version }}"
-          git push
+          git push -u --force origin "${BRANCH}"
+
+          # Reuse an existing PR if a prior run already opened one.
+          if ! gh pr view "${BRANCH}" >/dev/null 2>&1; then
+            gh pr create --base main --head "${BRANCH}" \
+              --title "Update ${{ inputs.formula }} to v${{ inputs.version }}" \
+              --body "Manual checksum update for ${{ inputs.formula }} ${{ inputs.version }}."
+          fi
+
+          # No required checks/approvals, so squash-merge once GitHub computes
+          # mergeability.
+          for attempt in $(seq 1 10); do
+            if gh pr merge "${BRANCH}" --squash --delete-branch; then
+              echo "Merged ${{ inputs.formula }} ${{ inputs.version }}."
+              exit 0
+            fi
+            echo "PR not mergeable yet (attempt ${attempt}); waiting…"
+            sleep 6
+          done
+          echo "::error::Could not squash-merge the update PR."
+          exit 1
