@@ -7,11 +7,11 @@ class Virtiofsd < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v#{version}/virtiofsd-#{version}-darwin-arm64.tar.gz"
+      url "https://github.com/christhomas/virtiofsd/releases/download/v#{version}/virtiofsd-#{version}-darwin-arm64.tar.gz"
       sha256 "fedd4b3590fa1944c0a16fd4b67b49f6af8e098b3f48fa5dabddc4e1d61d24ff"
     end
     on_intel do
-      url "https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v#{version}/virtiofsd-#{version}-darwin-x86_64.tar.gz"
+      url "https://github.com/christhomas/virtiofsd/releases/download/v#{version}/virtiofsd-#{version}-darwin-x86_64.tar.gz"
       sha256 "a5be5a1a14f35a54e45303d032c9926dc2d2f507b375e95d0b4414ba54356f9d"
     end
   end

@@ -27,7 +27,7 @@ jobs:
         if: inputs.formula == 'virtiofsd'
         run: |
           VER="${{ inputs.version }}"
-          BASE="https://github.com/antimatter-studios/homebrew-tap/releases/download/virtiofsd-v${VER}"
+          BASE="https://github.com/christhomas/virtiofsd/releases/download/v${VER}"
 
           ARM_SHA=$(curl -sL "${BASE}/virtiofsd-${VER}-darwin-arm64.tar.gz"   | sha256sum | cut -d' ' -f1)
           X86_SHA=$(curl -sL "${BASE}/virtiofsd-${VER}-darwin-x86_64.tar.gz" | sha256sum | cut -d' ' -f1)
