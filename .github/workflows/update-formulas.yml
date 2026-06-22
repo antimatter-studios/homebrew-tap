@@ -26,11 +26,12 @@ jobs:
       - name: Update virtiofsd formula
         if: inputs.formula == 'virtiofsd'
         run: |
+          set -euo pipefail
           VER="${{ inputs.version }}"
           BASE="https://github.com/christhomas/virtiofsd/releases/download/v${VER}"
 
-          ARM_SHA=$(curl -sL "${BASE}/virtiofsd-${VER}-darwin-arm64.tar.gz"   | sha256sum | cut -d' ' -f1)
-          X86_SHA=$(curl -sL "${BASE}/virtiofsd-${VER}-darwin-x86_64.tar.gz" | sha256sum | cut -d' ' -f1)
+          ARM_SHA=$(curl -fsSL "${BASE}/virtiofsd-${VER}-darwin-arm64.tar.gz"   | sha256sum | cut -d' ' -f1)
+          X86_SHA=$(curl -fsSL "${BASE}/virtiofsd-${VER}-darwin-x86_64.tar.gz" | sha256sum | cut -d' ' -f1)
 
           sed -i "s/version \".*\"/version \"${VER}\"/" Formula/virtiofsd.rb
           sed -i "/darwin-arm64/{n;s/sha256 \".*\"/sha256 \"${ARM_SHA}\"/;}" Formula/virtiofsd.rb
@@ -39,11 +40,12 @@ jobs:
       - name: Update qemu formula
         if: inputs.formula == 'qemu'
         run: |
+          set -euo pipefail
           VER="${{ inputs.version }}"
           BASE="https://github.com/antimatter-studios/homebrew-tap/releases/download/qemu-v${VER}"
 
-          ARM_SHA=$(curl -sL "${BASE}/qemu-${VER}-darwin-arm64.tar.gz"   | sha256sum | cut -d' ' -f1)
-          X86_SHA=$(curl -sL "${BASE}/qemu-${VER}-darwin-x86_64.tar.gz" | sha256sum | cut -d' ' -f1)
+          ARM_SHA=$(curl -fsSL "${BASE}/qemu-${VER}-darwin-arm64.tar.gz"   | sha256sum | cut -d' ' -f1)
+          X86_SHA=$(curl -fsSL "${BASE}/qemu-${VER}-darwin-x86_64.tar.gz" | sha256sum | cut -d' ' -f1)
 
           sed -i "s/version \".*\"/version \"${VER}\"/" Formula/qemu.rb
           sed -i "/darwin-arm64/{n;s/sha256 \".*\"/sha256 \"${ARM_SHA}\"/;}" Formula/qemu.rb
