@@ -4,8 +4,8 @@
 class Trove < Formula
   desc "KeePassXC-compatible secrets daemon for developer machines"
   homepage "https://github.com/antimatter-studios/trove"
-  url "https://github.com/antimatter-studios/trove/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "f47d6f5f19222457f8fc284e5f37377d8025d99ec4eaa6ccd4a4a2d2f6c60d91"
+  url "https://github.com/antimatter-studios/trove/archive/refs/tags/v0.4.0.tar.gz"
+  sha256 "a0d39fbd93b7f0f08e09ff7a01c60af41998102fc3fd1f632541eb8b80b02d59"
   license any_of: ["MIT", "Apache-2.0"]
   head "https://github.com/antimatter-studios/trove.git", branch: "main"
 
