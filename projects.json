@@ -1,0 +1,12 @@
+{
+  "virtiofsd": {
+    "repo": "christhomas/virtiofsd",
+    "tag_prefix": "v",
+    "formula": "Formula/virtiofsd.rb"
+  },
+  "qemu": {
+    "repo": "antimatter-studios/homebrew-tap",
+    "tag_prefix": "qemu-v",
+    "formula": "Formula/qemu.rb"
+  }
+}

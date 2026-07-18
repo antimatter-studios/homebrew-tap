@@ -1,0 +1,125 @@
+# Pull released artifacts from the projects in projects.json and update the
+# formulae to the latest version of each.
+#
+# PULL model, human-gated:
+#   * Triggered manually (Run workflow) — never by another repo's pipeline.
+#   * Only READS each project's public GitHub Releases (computes the sha256 of
+#     the actual downloaded asset); no source repo can push into this tap.
+#   * Writes the version + checksum changes to a branch and opens an UNMERGED
+#     PR. It never merges or approves. You review the diff and squash-merge to
+#     publish — nothing reaches `brew install` users without you.
+#
+# Prerequisite: a secret HOMEBREW_TAP_TOKEN — a fine-grained PAT with
+# `pull-requests: write` on this repo. The org blocks the built-in GITHUB_TOKEN
+# from opening PRs, so the PR is opened with the PAT. (The PAT only opens the
+# PR; the merge is yours.)
+name: Sync formulae from releases
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'Project to sync ("all" or a single name from projects.json)'
+        required: false
+        default: 'all'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pull latest releases and update formulae
+        id: sync
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          select="${{ github.event.inputs.project }}"
+          summary=""
+
+          for name in $(jq -r 'keys[]' projects.json); do
+            if [ "$select" != "all" ] && [ "$select" != "$name" ]; then
+              continue
+            fi
+            repo=$(jq -r --arg n "$name" '.[$n].repo' projects.json)
+            prefix=$(jq -r --arg n "$name" '.[$n].tag_prefix' projects.json)
+            formula=$(jq -r --arg n "$name" '.[$n].formula' projects.json)
+
+            # Newest non-draft release for this project. Map '-' to '~' so
+            # `sort -V` orders pre-releases before their final (1.2.0-rc1 < 1.2.0).
+            version=$(gh release list --repo "$repo" --limit 200 --json tagName,isDraft \
+                        --jq "[.[] | select(.isDraft | not) | .tagName | select(startswith(\"$prefix\"))] | .[]" \
+                      | sed "s|^${prefix}||" | tr '-' '~' | sort -V | tail -1 | tr '~' '-')
+            if [ -z "$version" ]; then
+              echo "::warning::no release found for ${name} on ${repo}"
+              continue
+            fi
+
+            current=$(jq -r --arg n "$name" '.[$n] // ""' versions.lock)
+            if [ "$version" = "$current" ]; then
+              echo "${name}: already at ${version}"
+              continue
+            fi
+
+            full_tag="${prefix}${version}"
+            base="https://github.com/${repo}/releases/download/${full_tag}"
+            arm_sha=$(curl -fsSL "${base}/${name}-${version}-darwin-arm64.tar.gz"  | sha256sum | cut -d' ' -f1)
+            x86_sha=$(curl -fsSL "${base}/${name}-${version}-darwin-x86_64.tar.gz" | sha256sum | cut -d' ' -f1)
+
+            sed -i "s/version \".*\"/version \"${version}\"/" "$formula"
+            sed -i "/darwin-arm64/{n;s/sha256 \".*\"/sha256 \"${arm_sha}\"/;}" "$formula"
+            sed -i "/darwin-x86_64/{n;s/sha256 \".*\"/sha256 \"${x86_sha}\"/;}" "$formula"
+
+            tmp=$(mktemp)
+            jq --arg n "$name" --arg v "$version" '.[$n] = $v' versions.lock > "$tmp"
+            mv "$tmp" versions.lock
+
+            summary="${summary}- ${name}: ${current:-none} → ${version}"$'\n'
+            echo "${name}: ${current:-none} → ${version}"
+          done
+
+          if git diff --quiet; then
+            echo "No formula changes; everything is already current."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          {
+            echo "summary<<SUMMARY_EOF"
+            printf '%s' "$summary"
+            echo "SUMMARY_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open a PR for review
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          # PAT (pull-requests: write). The org blocks GITHUB_TOKEN from opening
+          # PRs; this token only opens it — the merge is done by a human.
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          SUMMARY: ${{ steps.sync.outputs.summary }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::HOMEBREW_TAP_TOKEN secret (PAT with pull-requests: write) is required to open the PR."
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          branch="sync/formulae-${{ github.run_id }}"
+          git switch -c "$branch"
+          git add Formula/ versions.lock
+          git commit -m "Sync formulae from upstream releases"
+          # Branches are not protected, so the default token can push the branch.
+          git push -u origin "$branch"
+
+          body="$(printf 'Pulled the latest releases listed in projects.json and updated the formulae + versions.lock. Review the version and checksum changes, then squash-merge to publish.\n\n%s' "$SUMMARY")"
+          gh pr create --base main --head "$branch" \
+            --title "Sync formulae from upstream releases" \
+            --body "$body"
+
+          echo "Opened a PR from ${branch}. Review and squash-merge to publish."
