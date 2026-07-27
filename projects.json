@@ -8,5 +8,10 @@
     "repo": "antimatter-studios/homebrew-tap",
     "tag_prefix": "qemu-v",
     "formula": "Formula/qemu.rb"
+  },
+  "chore": {
+    "repo": "antimatter-studios/chore",
+    "tag_prefix": "v",
+    "formula": "Formula/chore.rb"
   }
 }

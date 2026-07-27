@@ -5,6 +5,8 @@
 #   * Triggered manually (Run workflow) — never by another repo's pipeline.
 #   * Only READS each project's public GitHub Releases (computes the sha256 of
 #     the actual downloaded asset); no source repo can push into this tap.
+#   * Updates every platform a formula declares (darwin/linux × arm64/x86_64),
+#     skipping the ones it does not.
 #   * Writes the version + checksum changes to a branch and opens an UNMERGED
 #     PR. It never merges or approves. You review the diff and squash-merge to
 #     publish — nothing reaches `brew install` users without you.
@@ -67,12 +69,27 @@ jobs:
 
             full_tag="${prefix}${version}"
             base="https://github.com/${repo}/releases/download/${full_tag}"
-            arm_sha=$(curl -fsSL "${base}/${name}-${version}-darwin-arm64.tar.gz"  | sha256sum | cut -d' ' -f1)
-            x86_sha=$(curl -fsSL "${base}/${name}-${version}-darwin-x86_64.tar.gz" | sha256sum | cut -d' ' -f1)
-
             sed -i "s/version \".*\"/version \"${version}\"/" "$formula"
-            sed -i "/darwin-arm64/{n;s/sha256 \".*\"/sha256 \"${arm_sha}\"/;}" "$formula"
-            sed -i "/darwin-x86_64/{n;s/sha256 \".*\"/sha256 \"${x86_sha}\"/;}" "$formula"
+
+            # Hash every platform the formula actually declares, rather than
+            # assuming macOS: a formula that ships linux tarballs would otherwise
+            # keep its placeholder checksums forever, and a macOS-only formula
+            # must not fail because there is no linux asset to fetch.
+            for platform in darwin-arm64 darwin-x86_64 linux-arm64 linux-x86_64; do
+              grep -q -- "$platform" "$formula" || continue
+              asset="${name}-${version}-${platform}.tar.gz"
+              if ! sha=$(curl -fsSL "${base}/${asset}" | sha256sum | cut -d' ' -f1); then
+                echo "::error::${asset} is declared by ${formula} but missing from ${full_tag}"
+                exit 1
+              fi
+              # The sha256 line follows the url line within each platform block.
+              sed -i "/${platform}/{n;s|sha256 \".*\"|sha256 \"${sha}\"|;}" "$formula"
+            done
+
+            if grep -q "sha256 \"0\{64\}\"" "$formula"; then
+              echo "::error::a placeholder checksum survived in ${formula} — url and sha256 lines may be out of order"
+              exit 1
+            fi
 
             tmp=$(mktemp)
             jq --arg n "$name" --arg v "$version" '.[$n] = $v' versions.lock > "$tmp"
