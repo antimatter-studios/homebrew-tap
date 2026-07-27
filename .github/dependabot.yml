@@ -1,0 +1,18 @@
+version: 2
+
+# Pinning actions by commit SHA removes the mutable-tag risk and creates a new
+# obligation: a pin never updates itself. Without this file the pins rot, and a
+# frozen action is eventually a vulnerable one — chore inherited
+# actions/checkout@v4.4.0 this way and was three majors behind before anyone
+# noticed, emitting Node 20 deprecation warnings on every run.
+#
+# Dependabot understands SHA pins: it bumps the SHA and rewrites the trailing
+# version comment, so review stays readable.
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: ci
