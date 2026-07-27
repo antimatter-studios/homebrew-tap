@@ -152,3 +152,35 @@ jobs:
             exit 1
           fi
           echo "no placeholder checksums"
+
+  # One check to require, so a job name can change without stranding merges.
+  #
+  # github-guard sets required status checks by DISCOVERED JOB NAME. That makes
+  # renaming a job, refactoring one into a matrix, or letting one skip enough to
+  # block every pull request permanently: the required name never reports, GitHub
+  # reads that as pending, and there is no failure to point at. It happened to
+  # rest-mail in July, when a required `Build` kept being demanded after the job
+  # became `Build (linux)`.
+  #
+  # Requiring only this job removes the whole class. It always runs, and fails
+  # only if a job that actually ran failed — skipped counts as success.
+  ci:
+    name: CI
+    needs: [workflows, formulae]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verdict
+        run: |
+          set -euo pipefail
+          workflows='${{ needs.workflows.result }}'
+          formulae='${{ needs.formulae.result }}'
+          echo "  workflows: $workflows"
+          echo "  formulae:  $formulae"
+          for r in "$workflows" "$formulae"; do
+            case "$r" in
+              success|skipped) ;;
+              *) echo "::error::a job did not succeed" >&2; exit 1 ;;
+            esac
+          done
+          echo "  all checks that ran passed"

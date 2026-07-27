@@ -1,0 +1,5 @@
+# What must pass before main takes a merge — see the github-guard skill.
+#
+# One always-run aggregate job that needs: the others, so a required check by
+# this name always reports even when a job is renamed, matrixed or skipped.
+CI
