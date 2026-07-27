@@ -63,7 +63,10 @@ jobs:
 
   formulae:
     name: Formulae
-    runs-on: ubuntu-latest
+    # macOS, because `brew` is only preinstalled on the macOS runners — this job
+    # asserted otherwise on its first run and failed with "brew: command not
+    # found".
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -81,10 +84,10 @@ jobs:
           # Homebrew is preinstalled on the runner. `style` is the linter that
           # decides whether a formula is acceptable to brew itself, so it catches
           # what ruby -c cannot: deprecated DSL, ordering, naming.
-          brew style Formula/*.rb || {
+          if ! brew style Formula/*.rb; then
             echo "::error::brew style rejected a formula" >&2
             exit 1
-          }
+          fi
 
       # projects.json drives tap-sync, so a formula it names must exist and a
       # version it records must be sane. A typo here means a sync that silently
@@ -96,7 +99,10 @@ jobs:
           for name in $(jq -r 'keys[]' projects.json); do
             formula=$(jq -r --arg n "$name" '.[$n].formula' projects.json)
             repo=$(jq -r --arg n "$name" '.[$n].repo' projects.json)
-            [ -n "$repo" ] && [ "$repo" != null ] || { echo "$name: no repo" >&2; fail=1; }
+            if [ -z "$repo" ] || [ "$repo" = null ]; then
+              echo "$name: no repo in projects.json" >&2
+              fail=1
+            fi
             if [ ! -f "$formula" ]; then
               echo "$name: projects.json points at $formula, which does not exist" >&2
               fail=1
