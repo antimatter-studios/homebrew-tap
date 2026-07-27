@@ -16,8 +16,57 @@ permissions:
   contents: read
 
 jobs:
+  # Which parts of the tap this change touches. Gating on this keeps a formula
+  # bump from spinning up a macOS runner to lint workflows nobody edited, and it
+  # matters more as the tap grows: `brew style` over forty formulae is the slow
+  # part, not over two.
+  changes:
+    name: Changes
+    runs-on: ubuntu-latest
+    outputs:
+      workflows: ${{ steps.detect.outputs.workflows }}
+      formulae: ${{ steps.detect.outputs.formulae }}
+      files: ${{ steps.detect.outputs.files }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history, so a merge-base diff is possible: a shallow clone cannot
+          # say which files this branch changed.
+          fetch-depth: 0
+
+      - name: Detect
+        id: detect
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = pull_request ]; then
+            base="origin/${{ github.base_ref }}"
+            changed=$(git diff --name-only "$(git merge-base "$base" HEAD)" HEAD)
+          else
+            # On a push to main there is no meaningful base, and a formula that
+            # only breaks in combination should not slip through: check everything.
+            changed=$(git ls-files)
+          fi
+
+          echo "changed files:"
+          echo "$changed"
+
+          workflows=false
+          formulae=false
+          if echo "$changed" | grep -qE '^[.]github/'; then workflows=true; fi
+          if echo "$changed" | grep -qE '^(Formula|Casks)/|^projects[.]json$|^versions[.]lock$'; then formulae=true; fi
+
+          {
+            echo "workflows=$workflows"
+            echo "formulae=$formulae"
+            printf 'files='
+            echo "$changed" | grep -E '^(Formula|Casks)/.*[.]rb$' | tr '\n' ' ' || true
+            echo
+          } >> "$GITHUB_OUTPUT"
+
   workflows:
     name: Workflows
+    needs: changes
+    if: needs.changes.outputs.workflows == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -63,6 +112,8 @@ jobs:
 
   formulae:
     name: Formulae
+    needs: changes
+    if: needs.changes.outputs.formulae == 'true'
     # macOS, because `brew` is only preinstalled on the macOS runners — this job
     # asserted otherwise on its first run and failed with "brew: command not
     # found".
@@ -152,3 +203,32 @@ jobs:
             exit 1
           fi
           echo "no placeholder checksums"
+
+  # One check to require, so path filtering and required status checks can coexist.
+  #
+  # A required check that gets SKIPPED never reports, and GitHub treats that as
+  # pending — the pull request is then unmergeable forever. Requiring only this
+  # job avoids that: it always runs, and fails only if a job that actually ran
+  # failed. Skipped is success here, which is the whole point.
+  ci:
+    name: CI
+    needs: [changes, workflows, formulae]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verdict
+        run: |
+          set -euo pipefail
+          changes='${{ needs.changes.result }}'
+          workflows='${{ needs.workflows.result }}'
+          formulae='${{ needs.formulae.result }}'
+          echo "  changes:   $changes"
+          echo "  workflows: $workflows"
+          echo "  formulae:  $formulae"
+          for r in "$changes" "$workflows" "$formulae"; do
+            case "$r" in
+              success|skipped) ;;
+              *) echo "::error::a job did not succeed" >&2; exit 1 ;;
+            esac
+          done
+          echo "  all checks that applied passed"
