@@ -1,0 +1,126 @@
+name: CI
+
+# The tap had no pull-request gate at all: every workflow here is
+# workflow_dispatch, so a change to a formula or to a release pipeline was only
+# ever exercised by running it for real — a broken publish step would surface
+# after a 40-minute qemu build, and a malformed formula after someone's
+# `brew install` failed.
+#
+# Nothing here needs credentials, so it runs with read-only permissions.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  workflows:
+    name: Workflows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # actionlint checks workflow syntax, expression types, and runs shellcheck
+      # over every `run:` block. Fetched as a release binary and verified against
+      # the checksums the project publishes — the same discipline this tap applies
+      # to the artifacts it installs, and the reason no third-party action is
+      # involved in linting the workflows that hold write access.
+      - name: actionlint
+        env:
+          ACTIONLINT_VERSION: "1.7.12"
+        run: |
+          set -euo pipefail
+          base="https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}"
+          asset="actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"
+          curl -fsSL -o "$asset" "${base}/${asset}"
+          curl -fsSL -o al-checksums.txt "${base}/actionlint_${ACTIONLINT_VERSION}_checksums.txt"
+          grep " ${asset}\$" al-checksums.txt | sha256sum -c -
+          tar xzf "$asset" actionlint
+          ./actionlint .github/workflows/*.yml
+
+      # A floating tag is a pointer its owner can move, which is how
+      # tj-actions/changed-files leaked secrets from tens of thousands of repos in
+      # March 2025. These workflows hold contents: write and a PAT, so the pins
+      # are load-bearing and worth enforcing rather than trusting to review.
+      - name: Every action is pinned to a commit
+        run: |
+          set -euo pipefail
+          # Anchored to the start of a line so this check does not match its own
+          # pattern, written inside this very file — which it did on first run.
+          unpinned=$(grep -rhoE "^[[:space:]]*-?[[:space:]]*uses:[[:space:]]*\S+" .github/workflows/ \
+                     | sed -E "s/^[[:space:]]*-?[[:space:]]*uses:[[:space:]]*//" \
+                     | grep -vE "@[0-9a-f]{40}$" || true)
+          if [ -n "$unpinned" ]; then
+            echo "these action references are not pinned to a 40-character commit SHA:" >&2
+            echo "$unpinned" >&2
+            echo "" >&2
+            echo "pin them, and let dependabot keep them current" >&2
+            exit 1
+          fi
+          echo "all action references are pinned"
+
+  formulae:
+    name: Formulae
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Ruby syntax
+        run: |
+          set -euo pipefail
+          for f in Formula/*.rb Casks/*.rb; do
+            [ -e "$f" ] || continue
+            ruby -c "$f" >/dev/null && echo "  ok  $f"
+          done
+
+      - name: brew style
+        run: |
+          set -euo pipefail
+          # Homebrew is preinstalled on the runner. `style` is the linter that
+          # decides whether a formula is acceptable to brew itself, so it catches
+          # what ruby -c cannot: deprecated DSL, ordering, naming.
+          brew style Formula/*.rb || {
+            echo "::error::brew style rejected a formula" >&2
+            exit 1
+          }
+
+      # projects.json drives tap-sync, so a formula it names must exist and a
+      # version it records must be sane. A typo here means a sync that silently
+      # skips a project, which looks exactly like "nothing to update".
+      - name: Registry is consistent
+        run: |
+          set -euo pipefail
+          fail=0
+          for name in $(jq -r 'keys[]' projects.json); do
+            formula=$(jq -r --arg n "$name" '.[$n].formula' projects.json)
+            repo=$(jq -r --arg n "$name" '.[$n].repo' projects.json)
+            [ -n "$repo" ] && [ "$repo" != null ] || { echo "$name: no repo" >&2; fail=1; }
+            if [ ! -f "$formula" ]; then
+              echo "$name: projects.json points at $formula, which does not exist" >&2
+              fail=1
+              continue
+            fi
+            # The formula's version must match versions.lock, or tap-sync will
+            # either re-sync something already current or skip an update.
+            locked=$(jq -r --arg n "$name" '.[$n] // ""' versions.lock)
+            declared=$(grep -oE '^  version "[^"]+"' "$formula" | head -1 | sed -E 's/.*"([^"]+)".*/\1/')
+            if [ -n "$locked" ] && [ "$locked" != "$declared" ]; then
+              echo "$name: versions.lock says $locked but $formula declares $declared" >&2
+              fail=1
+            fi
+            echo "  ok  $name → $formula (${declared:-no version})"
+          done
+          [ "$fail" = 0 ]
+
+      - name: No placeholder checksums
+        run: |
+          set -euo pipefail
+          # A formula added by hand starts with zeroed checksums; one that reaches
+          # main with them still in place is unusable and fails at install time.
+          if grep -rn 'sha256 "0\{64\}"' Formula/ Casks/ 2>/dev/null; then
+            echo "::error::a placeholder checksum reached the formula above" >&2
+            exit 1
+          fi
+          echo "no placeholder checksums"
