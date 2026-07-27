@@ -1,9 +1,23 @@
 class Qemu < Formula
-  desc "QEMU emulator with vhost-user-fs support for macOS"
+  desc "Emulator with vhost-user-fs support for macOS"
   homepage "https://www.qemu.org/"
+  version "10.2.2"
   license "GPL-2.0-only"
 
-  version "10.2.2"
+  depends_on "glib"
+  depends_on "gnutls"
+  depends_on "jpeg-turbo"
+  depends_on "libpng"
+  depends_on "libslirp"
+  depends_on "libssh"
+  depends_on "libusb"
+  depends_on "lzo"
+  depends_on :macos
+  depends_on "ncurses"
+  depends_on "pixman"
+  depends_on "snappy"
+  depends_on "vde"
+  depends_on "zstd"
 
   on_macos do
     on_arm do
@@ -15,21 +29,6 @@ class Qemu < Formula
       sha256 "ee156046c78e10f20f19a83b5435911a5c305e9cc7a4eeb8afd4bc8ac3eebf25"
     end
   end
-
-  depends_on :macos
-  depends_on "glib"
-  depends_on "gnutls"
-  depends_on "jpeg-turbo"
-  depends_on "libpng"
-  depends_on "libslirp"
-  depends_on "libssh"
-  depends_on "libusb"
-  depends_on "lzo"
-  depends_on "ncurses"
-  depends_on "pixman"
-  depends_on "snappy"
-  depends_on "vde"
-  depends_on "zstd"
 
   conflicts_with "qemu", because: "both install qemu-system-* binaries"
 
