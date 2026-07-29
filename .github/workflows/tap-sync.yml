@@ -7,14 +7,14 @@
 #     the actual downloaded asset); no source repo can push into this tap.
 #   * Updates every platform a formula declares (darwin/linux × arm64/x86_64),
 #     skipping the ones it does not.
-#   * Writes the version + checksum changes to a branch and opens an UNMERGED
-#     PR. It never merges or approves. You review the diff and squash-merge to
-#     publish — nothing reaches `brew install` users without you.
+#   * Writes the version + checksum changes to a BRANCH and stops. It does not
+#     open the pull request, does not merge, and does not approve. You open the
+#     PR from your own machine and squash-merge it — nothing reaches
+#     `brew install` users without a person doing both.
 #
-# Prerequisite: a secret HOMEBREW_TAP_TOKEN — a fine-grained PAT with
-# `pull-requests: write` on this repo. The org blocks the built-in GITHUB_TOKEN
-# from opening PRs, so the PR is opened with the PAT. (The PAT only opens the
-# PR; the merge is yours.)
+# No secrets required: pushing an unprotected branch is within the default
+# token's `contents: write`. Opening a PR is the step a human does, so no token
+# here can propose a change to what brew installs.
 name: Sync formulae from releases
 
 on:
@@ -71,19 +71,42 @@ jobs:
             base="https://github.com/${repo}/releases/download/${full_tag}"
             sed -i "s/version \".*\"/version \"${version}\"/" "$formula"
 
+            # Asset naming is per-project. Most use <name>-<version>-<os>-<arch>, but
+            # goreleaser's default is <name>_<version>_<os>_<arch> with amd64 rather
+            # than x86_64, so a project keeping that convention declares it instead of
+            # being renamed to suit this script.
+            #
+            # The platform tokens double as the marker this script greps for, so they
+            # have to be the strings that appear in the url lines.
+            asset_template=$(jq -r --arg n "$name" \
+              '.[$n].asset // "{name}-{version}-{platform}.tar.gz"' projects.json)
+            platforms=$(jq -r --arg n "$name" \
+              '(.[$n].platforms // ["darwin-arm64","darwin-x86_64","linux-arm64","linux-x86_64"])[]' projects.json)
+
             # Hash every platform the formula actually declares, rather than
             # assuming macOS: a formula that ships linux tarballs would otherwise
             # keep its placeholder checksums forever, and a macOS-only formula
             # must not fail because there is no linux asset to fetch.
-            for platform in darwin-arm64 darwin-x86_64 linux-arm64 linux-x86_64; do
+            for platform in $platforms; do
               grep -q -- "$platform" "$formula" || continue
-              asset="${name}-${version}-${platform}.tar.gz"
+              asset="${asset_template//\{name\}/$name}"
+              asset="${asset//\{version\}/$version}"
+              asset="${asset//\{platform\}/$platform}"
               if ! sha=$(curl -fsSL "${base}/${asset}" | sha256sum | cut -d' ' -f1); then
                 echo "::error::${asset} is declared by ${formula} but missing from ${full_tag}"
                 exit 1
               fi
-              # The sha256 line follows the url line within each platform block.
-              sed -i "/${platform}/{n;s|sha256 \".*\"|sha256 \"${sha}\"|;}" "$formula"
+
+              # Casks put sha256 BEFORE url, formulae after, and `brew style` enforces
+              # each — so the line to rewrite is the sha256 stanza ADJACENT to the url
+              # containing this platform token, on whichever side it sits.
+              #
+              # This was `sed "/${platform}/{n;...}"`, which always took the line after.
+              # Against a cask that rewrote the wrong line or none at all, leaving a
+              # stale checksum — a silent wrong answer, and the failure mode that
+              # matters most here, because a wrong sha256 is only discovered by a user
+              # whose `brew install` refuses to run.
+              python3 .github/scripts/set-sha256.py "$formula" "$platform" "$sha"
             done
 
             if grep -q "sha256 \"0\{64\}\"" "$formula"; then
@@ -111,32 +134,36 @@ jobs:
             echo "SUMMARY_EOF"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Open a PR for review
+      # This workflow pushes a branch and stops there. It does NOT open the pull
+      # request, deliberately: nothing automated should be able to propose a change to
+      # what `brew install` fetches. A person opens the PR from their own machine, which
+      # is also the last point at which the diff is looked at by someone.
+      #
+      # It therefore needs no PAT — the default token can push an unprotected branch.
+      - name: Push the changes to a branch
         if: steps.sync.outputs.changed == 'true'
         env:
-          # PAT (pull-requests: write). The org blocks GITHUB_TOKEN from opening
-          # PRs; this token only opens it — the merge is done by a human.
-          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
           SUMMARY: ${{ steps.sync.outputs.summary }}
         run: |
           set -euo pipefail
-          if [ -z "${GH_TOKEN:-}" ]; then
-            echo "::error::HOMEBREW_TAP_TOKEN secret (PAT with pull-requests: write) is required to open the PR."
-            exit 1
-          fi
-
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           branch="sync/formulae-${{ github.run_id }}"
           git switch -c "$branch"
-          git add Formula/ versions.lock
+          git add Formula/ Casks/ versions.lock
           git commit -m "Sync formulae from upstream releases"
-          # Branches are not protected, so the default token can push the branch.
           git push -u origin "$branch"
 
-          body="$(printf 'Pulled the latest releases listed in projects.json and updated the formulae + versions.lock. Review the version and checksum changes, then squash-merge to publish.\n\n%s' "$SUMMARY")"
-          gh pr create --base main --head "$branch" \
-            --title "Sync formulae from upstream releases" \
-            --body "$body"
+          {
+            echo "### Branch pushed: \`${branch}\`"
+            echo
+            printf '%s\n' "$SUMMARY"
+            echo "Nothing is published yet. To review and publish:"
+            echo
+            echo '```sh'
+            echo "gh pr create --repo ${{ github.repository }} --base main --head ${branch} \\"
+            echo "  --title 'Sync formulae from upstream releases'"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
-          echo "Opened a PR from ${branch}. Review and squash-merge to publish."
+          echo "Pushed ${branch}. Open the PR yourself; this workflow will not."
