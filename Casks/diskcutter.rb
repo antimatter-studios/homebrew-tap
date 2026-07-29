@@ -1,6 +1,6 @@
 cask "diskcutter" do
-  version "2026.7.28"
-  sha256 "e0f8a4aebe4adf4ddb8e9bd299ca64e7037ba216f0de21fcf0ec5b74ecd2ff70"
+  version "2026.7.29"
+  sha256 "29c5bcf5744e0e6aa1d9b825ede48313e1061e78521bcdd15ab91b5eeedd146d"
 
   # CalVer tags carry no `v` prefix, so the tag is the version verbatim. The
   # release workflow does stamp a `-0` stable-release suffix onto the bundle
