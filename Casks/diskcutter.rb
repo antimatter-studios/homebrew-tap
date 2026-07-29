@@ -1,17 +1,24 @@
 cask "diskcutter" do
-  version "2026.7.29"
-  sha256 "29c5bcf5744e0e6aa1d9b825ede48313e1061e78521bcdd15ab91b5eeedd146d"
+  version "2026.7.29-1"
+  sha256 "1f6cdfa2aa51925af6ce02680538051180bbb42d366bb76bf2abac138e7a6510"
 
-  # CalVer tags carry no `v` prefix, so the tag is the version verbatim. The
-  # release workflow does stamp a `-0` stable-release suffix onto the bundle
-  # version, so the asset filename carries it even though the tag does not.
-  url "https://github.com/antimatter-studios/diskcutter/releases/download/#{version}/Disk.Cutter_#{version}-0_universal.dmg"
+  # CalVer tags carry no `v` prefix, so the tag is the version verbatim, and the
+  # asset now carries that same version. Previously the release workflow forced
+  # a `-0` suffix onto the bundle regardless of the tag, so this url had to
+  # append one; it stopped doing that, which is what makes a same-day hotfix
+  # release such as this `-1` possible at all.
+  url "https://github.com/antimatter-studios/diskcutter/releases/download/#{version}/Disk.Cutter_#{version}_universal.dmg"
   name "Disk Cutter"
   desc "Disk-image writer with a parallel job queue and per-sector verification"
   homepage "https://github.com/antimatter-studios/diskcutter"
 
   livecheck do
     url :url
+    # github_latest's default regex is /v?(\d+(?:\.\d+)+)/i — digits and dots
+    # only — so it truncates a hotfix tag like 2026.7.29-1 to 2026.7.29 and
+    # audit then reports the cask as disagreeing with itself. Match the release
+    # counter too.
+    regex(/^v?(\d+(?:\.\d+)+(?:-\d+)?)$/i)
     strategy :github_latest
   end
 
