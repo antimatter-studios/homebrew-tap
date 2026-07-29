@@ -20,5 +20,19 @@
     "formula": "Casks/ddt.rb",
     "asset": "{name}_{version}_{platform}.tar.gz",
     "platforms": ["darwin_amd64", "darwin_arm64", "linux_amd64", "linux_arm64"]
+  },
+  "trove-cli": {
+    "repo": "antimatter-studios/trove",
+    "tag_prefix": "v",
+    "formula": "Formula/trove-cli.rb",
+    "asset": "trove-{version}-{platform}.tar.gz",
+    "platforms": ["darwin-arm64", "darwin-x86_64", "linux-arm64", "linux-x86_64"]
+  },
+  "trove-desktop": {
+    "repo": "antimatter-studios/trove",
+    "tag_prefix": "v",
+    "formula": "Casks/trove-desktop.rb",
+    "asset": "TroveDesktop_{version}_{platform}.dmg",
+    "platforms": ["universal"]
   }
 }
