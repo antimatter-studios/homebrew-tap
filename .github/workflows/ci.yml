@@ -111,6 +111,61 @@ jobs:
             exit 1
           fi
 
+      # `brew style` and `brew audit` disagree, and the disagreement is not
+      # academic: style AUTOCORRECTS `depends_on macos: ">= :high_sierra"` into
+      # `depends_on macos: :high_sierra`, which the brew runtime then refuses to
+      # load at all —
+      #
+      #   Error: Calling `depends_on macos: :high_sierra` is disabled!
+      #
+      # So a cask can be style-clean and still be impossible to install. Style
+      # is a linter; audit is what actually loads the cask the way `brew
+      # install` does. Only audit catches that class.
+      #
+      # Offline on purpose: --online re-downloads every artifact on every PR,
+      # which is slow and makes CI fail on someone else's outage. The failure
+      # mode above is a load-time error and is caught without the network.
+      - name: Register the checkout as a tap
+        run: |
+          set -euo pipefail
+          # audit takes names, not paths (`brew audit <path>` is disabled), so
+          # the working copy has to be visible as a real tap. Symlinking THIS
+          # checkout — rather than `brew tap`-ing from GitHub, which would fetch
+          # main — is what makes a pull request audit its own changes.
+          tap_dir="$(brew --repository)/Library/Taps/antimatter-studios/homebrew-tap"
+          mkdir -p "$(dirname "$tap_dir")"
+          ln -sfn "$GITHUB_WORKSPACE" "$tap_dir"
+          brew tap | sed 's/^/  tapped: /'
+
+      - name: brew audit
+        run: |
+          set -euo pipefail
+          # Same hand/generated split as brew style above, and for the same
+          # reason: instantmailcheck.rb is GoReleaser output whose description
+          # is over the 80-char limit, fixable only in that project's
+          # .goreleaser.yml.
+          fail=0
+          for f in Formula/*.rb Casks/*.rb; do
+            [ -e "$f" ] || continue
+            name="antimatter-studios/tap/$(basename "$f" .rb)"
+            case "$f" in
+              Casks/*) flag=--cask ;;
+              *)       flag=--formula ;;
+            esac
+
+            if grep -qi "DO NOT EDIT" "$f"; then
+              echo "generated (reported only — fix upstream): $name"
+              brew audit "$flag" "$name" || true
+            else
+              echo "enforced: $name"
+              if ! brew audit "$flag" "$name"; then
+                echo "::error::brew audit rejected $name" >&2
+                fail=1
+              fi
+            fi
+          done
+          [ "$fail" = 0 ]
+
       # projects.json drives tap-sync, so a formula it names must exist and a
       # version it records must be sane. A typo here means a sync that silently
       # skips a project, which looks exactly like "nothing to update".

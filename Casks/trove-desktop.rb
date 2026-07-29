@@ -2,8 +2,7 @@ cask "trove-desktop" do
   version "0.5.0"
   sha256 "a46c63715b21aa6948196686c5ff98bb177f3e9e29fcab954cf9dcaf50049d76"
 
-  url "https://github.com/antimatter-studios/trove/releases/download/v#{version}/TroveDesktop_#{version}_universal.dmg",
-      verified: "github.com/antimatter-studios/trove/"
+  url "https://github.com/antimatter-studios/trove/releases/download/v#{version}/TroveDesktop_#{version}_universal.dmg"
   name "Trove Desktop"
   desc "Desktop vault manager — GUI companion to the trove CLI"
   homepage "https://github.com/antimatter-studios/trove"
