@@ -7,7 +7,7 @@
 # and merges it. Only the version and the four checksums are rewritten by that workflow
 # — everything else here is edited by hand.
 cask "ddt" do
-  version "2.2.1"
+  version "2.2.2"
 
   name "ddt"
   desc "Docker development tools CLI"
@@ -21,22 +21,22 @@ cask "ddt" do
 
   on_macos do
     on_intel do
-      sha256 "5efbfd61e095bd95bd0009182d2cab4263723ce885ed7fbec31ababa1a1e8b31"
+      sha256 "f03aac25acdce5f9818052a279a5df76cda18391382dcbfdd428d60e0f80f82e"
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_darwin_amd64.tar.gz"
     end
     on_arm do
-      sha256 "c6b869b0e3d02d8bafa2c03db907149fe2e880b19c10452fa284062eaa285887"
+      sha256 "16c46922982dc08223d27fe2fe8b2f7680f24e0f7c1aed0f90a1350ee1795c4a"
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_darwin_arm64.tar.gz"
     end
   end
 
   on_linux do
     on_intel do
-      sha256 "f3319c103518431728f0eab7a33ea0fd8d4b78431c111d342990df0f8dd7392a"
+      sha256 "836d0726c8b69ba073a8d43738a0cdffd750baa2b4b1d28751f161c06c6e227b"
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_linux_amd64.tar.gz"
     end
     on_arm do
-      sha256 "bf400fd686ab8163e13b2b3465adc0e301a6e70b9b74e8e7c3d14abe4b94741a"
+      sha256 "37a6f849ddd61f25e9609190d03f17c29011aacecb68459bb809b4ab5c86232e"
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_linux_arm64.tar.gz"
     end
   end
