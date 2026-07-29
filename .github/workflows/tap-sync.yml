@@ -96,8 +96,17 @@ jobs:
                 echo "::error::${asset} is declared by ${formula} but missing from ${full_tag}"
                 exit 1
               fi
-              # The sha256 line follows the url line within each platform block.
-              sed -i "/${platform}/{n;s|sha256 \".*\"|sha256 \"${sha}\"|;}" "$formula"
+
+              # Casks put sha256 BEFORE url, formulae after, and `brew style` enforces
+              # each — so the line to rewrite is the sha256 stanza ADJACENT to the url
+              # containing this platform token, on whichever side it sits.
+              #
+              # This was `sed "/${platform}/{n;...}"`, which always took the line after.
+              # Against a cask that rewrote the wrong line or none at all, leaving a
+              # stale checksum — a silent wrong answer, and the failure mode that
+              # matters most here, because a wrong sha256 is only discovered by a user
+              # whose `brew install` refuses to run.
+              python3 .github/scripts/set-sha256.py "$formula" "$platform" "$sha"
             done
 
             if grep -q "sha256 \"0\{64\}\"" "$formula"; then
