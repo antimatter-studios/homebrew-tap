@@ -17,7 +17,14 @@
   "ddt": {
     "repo": "antimatter-studios/docker-dev-tools",
     "tag_prefix": "v",
-    "formula": "Casks/ddt.rb",
+    "formula": "Formula/ddt.rb",
+    "asset": "{name}_{version}_{platform}.tar.gz",
+    "platforms": ["darwin_amd64", "darwin_arm64", "linux_amd64", "linux_arm64"]
+  },
+  "instantmailcheck": {
+    "repo": "rest-mail/instantmailcheck",
+    "tag_prefix": "v",
+    "formula": "Formula/instantmailcheck.rb",
     "asset": "{name}_{version}_{platform}.tar.gz",
     "platforms": ["darwin_amd64", "darwin_arm64", "linux_amd64", "linux_arm64"]
   },
