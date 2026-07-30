@@ -16,7 +16,10 @@ class Virtiofsd < Formula
   desc "Virtio-fs vhost-user device daemon (macOS port)"
   homepage "https://github.com/christhomas/virtiofsd"
   version "1.13.8"
-  license any_of: ["Apache-2.0", "BSD-3-Clause"]
+  # Upstream's Cargo.toml says "Apache-2.0 AND BSD-3-Clause" — both apply at
+  # once. This said any_of, which is Homebrew's spelling of OR and claimed a
+  # choice between them that upstream does not offer. all_of is AND.
+  license all_of: ["Apache-2.0", "BSD-3-Clause"]
 
   depends_on :macos
 
