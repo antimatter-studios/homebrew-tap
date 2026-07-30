@@ -188,7 +188,15 @@ jobs:
             # The formula's version must match versions.lock, or tap-sync will
             # either re-sync something already current or skip an update.
             locked=$(jq -r --arg n "$name" '.[$n] // ""' versions.lock)
-            declared=$(grep -oE '^  version "[^"]+"' "$formula" | head -1 | sed -E 's/.*"([^"]+)".*/\1/')
+            # Was `grep -oE ... | head -1 | sed ...`, which under `set -euo
+            # pipefail` aborted this whole step, with no diagnostic, for any file
+            # with no `  version "..."` line — grep exits 1, pipefail promotes
+            # that to the assignment, and -e ends the job. `head` closing the pipe
+            # early could do the same via SIGPIPE. The `${declared:-no version}`
+            # fallback below shows an empty result was meant to be survivable, and
+            # was not reachable. One sed, no pipeline: prints the first match and
+            # exits 0 either way.
+            declared=$(sed -nE '/^  version "/{s/^  version "([^"]+)".*/\1/p;q;}' "$formula")
             if [ -n "$locked" ] && [ "$locked" != "$declared" ]; then
               echo "$name: versions.lock says $locked but $formula declares $declared" >&2
               fail=1
