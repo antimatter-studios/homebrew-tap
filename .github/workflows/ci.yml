@@ -208,6 +208,63 @@ jobs:
           fi
           echo "no placeholder checksums"
 
+      # Nothing here caught instantmailcheck being converted from a formula to a
+      # cask, because the cask was valid: `ruby -c`, `brew style` and `brew audit`
+      # all passed it, and `brew install --cask` would have succeeded. Only
+      # running the installed binary failed, and no check does that.
+      #
+      # Every tool in this tap is a pre-compiled binary built by its own pipeline;
+      # none is compiled at install time. So the formula/cask choice is not about
+      # building, and for a bare binary a cask costs two things a formula does
+      # not:
+      #
+      #   * Homebrew quarantines what a cask stages. These binaries carry only the
+      #     ad-hoc signature a linker applies, so Gatekeeper refuses to execute
+      #     one and the first run is killed unless the cask clears the attribute.
+      #   * The postflight that clears it calls /usr/bin/xattr, which does not
+      #     exist on Linux — and the cask DSL's `system_command` raises on
+      #     failure, so the fix for macOS breaks the Linux install.
+      #
+      # Nothing quarantines what a formula installs, so a formula has neither
+      # problem. An `app` bundle is a real cask; a bare binary is a formula.
+      - name: Command-line tools ship as formulae
+        run: |
+          set -euo pipefail
+
+          # Casks that cannot be converted here yet: their own release pipelines
+          # still write these files, so a change made here is overwritten by their
+          # next release. Each needs its `homebrew_casks` section removed first,
+          # the way rest-mail/instantmailcheck#2 does it. Remove a name from this
+          # list once that has landed, and this check starts enforcing it.
+          pending="dotman tacli"
+
+          fail=0
+          for f in Casks/*.rb; do
+            [ -e "$f" ] || continue
+            name=$(basename "$f" .rb)
+
+            # sed rather than `grep | sed`: a cask with no binary stanza makes
+            # grep exit 1, and under `pipefail` that would abort the whole step
+            # instead of skipping the file. sed prints nothing and exits 0.
+            bins=$(sed -nE 's/^[[:space:]]*binary "([^"]+)".*/\1/p' "$f")
+
+            if [ -z "$bins" ]; then
+              echo "  ok  $name ships an app bundle, so a cask is right"
+              continue
+            fi
+
+            case " $pending " in
+              *" $name "*)
+                echo "  --  $name ships a binary, but its own pipeline still writes this file; conversion pending"
+                continue
+                ;;
+            esac
+
+            echo "::error file=$f::$name ships a bare binary ($bins) as a cask; command-line tools in this tap are formulae — see Formula/chore.rb" >&2
+            fail=1
+          done
+          [ "$fail" = 0 ]
+
   # One check to require, so a job name can change without stranding merges.
   #
   # github-guard sets required status checks by DISCOVERED JOB NAME. That makes
