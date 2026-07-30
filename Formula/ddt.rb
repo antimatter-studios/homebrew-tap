@@ -53,10 +53,14 @@ class Ddt < Formula
 
   def caveats
     <<~EOS
-      Anyone who installed ddt as a cask should remove that first, because
-      Homebrew tracks the two separately and the cask's symlink shadows this one:
+      Replacing the ddt cask? Remove it and clear the cached download. Homebrew
+      tracks casks and formulae separately, so the cask's symlink would shadow this
+      one — and it deliberately quarantines cask downloads, so reusing that cached
+      tarball hands the extracted binary a quarantine attribute and macOS refuses
+      to run it:
 
         brew uninstall --cask ddt
+        rm -f "$(brew --cache)/ddt--"*.tar.gz
         brew install antimatter-studios/tap/ddt
     EOS
   end
