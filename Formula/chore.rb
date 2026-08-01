@@ -4,28 +4,28 @@
 class Chore < Formula
   desc "Task runner that reads chores.yml and gives tasks real arguments"
   homepage "https://github.com/antimatter-studios/chore"
-  version "0.1.3"
+  version "0.2.0"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/antimatter-studios/chore/releases/download/v#{version}/chore-#{version}-darwin-arm64.tar.gz"
-      sha256 "a235c4db0944f4bbbb644ca9fe0905d2ddfeb270a4bbc6727d6e91146c887a5c"
+      sha256 "c011e1cd52f4fd21d49f86608f580dd9d70061df44a8687eb5d0ecbf0d72f367"
     end
     on_intel do
       url "https://github.com/antimatter-studios/chore/releases/download/v#{version}/chore-#{version}-darwin-x86_64.tar.gz"
-      sha256 "7bf6faa2ac79cd9b728af6368fc8ad7dd050a16ef2feb4e750ae562d2ed6f8c8"
+      sha256 "8b68b3505c6fb9e9dbb7c0cd881ffa0b0a2cd8865c73f6ff09d75c2ac9fbac3e"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/antimatter-studios/chore/releases/download/v#{version}/chore-#{version}-linux-arm64.tar.gz"
-      sha256 "1380e4685df539b90c5542afc0df293761ce6c843cf47bee411f66928fb5726d"
+      sha256 "0296e11db0ec2ca66ea36200058cb831f0c59f8a7703acf1c8bfcc8097b0e5c3"
     end
     on_intel do
       url "https://github.com/antimatter-studios/chore/releases/download/v#{version}/chore-#{version}-linux-x86_64.tar.gz"
-      sha256 "ff2eb922f9726c7d71591ad4efa5054ca70d80fe692bbb3363de1befbd973e13"
+      sha256 "5e1968fd55e631d4d7fbab347be44c3881ed983d7edbaad36bc086df685139a0"
     end
   end
 
