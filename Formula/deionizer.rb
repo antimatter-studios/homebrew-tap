@@ -10,22 +10,22 @@ class Deionizer < Formula
   on_macos do
     on_arm do
       url "https://github.com/antimatter-studios/deionizer/releases/download/v#{version}/deionizer-#{version}-darwin-arm64.tar.gz"
-      sha256 "fe9904776dc036a783bc900694d88593ad614fdf9e28e3b6842f427d471482ae"
+      sha256 "b85020f52c9afe3e0f65cdf0ffa7ad01253306b95edb6a9a8079310653ed583a"
     end
     on_intel do
       url "https://github.com/antimatter-studios/deionizer/releases/download/v#{version}/deionizer-#{version}-darwin-x86_64.tar.gz"
-      sha256 "fd9757e36ed6670df8ad8bf92e0fa815e1c338d6902e1e732b3d7989db44c35f"
+      sha256 "3321758da120f566156422dc066d7822b377d999439b787dc60c4cfbf37297b1"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/antimatter-studios/deionizer/releases/download/v#{version}/deionizer-#{version}-linux-arm64.tar.gz"
-      sha256 "706bcbb972694872091446e0b25ad55ca9d5a487c56fed90a377ddb03a9e8250"
+      sha256 "0f737f732bb9daee72a70aeaffff0697f0a24f91fd229066e28c8d3abf37aae3"
     end
     on_intel do
       url "https://github.com/antimatter-studios/deionizer/releases/download/v#{version}/deionizer-#{version}-linux-x86_64.tar.gz"
-      sha256 "2e386ef57922799502bdb3a0c0ddb7b2827c9cc05bc6d1c90aa2dda3c5d96332"
+      sha256 "4a15a8e6e8c20df5a091cd006db3f40c7bdab8b04185c969b5c973a14b3f7a07"
     end
   end
 
