@@ -8,11 +8,12 @@
 # Three choices here are deliberate, and are explained up here rather than beside the
 # stanzas because brew style requires stanzas in a group to be contiguous:
 #
-#   * `binary` points INSIDE the installed bundle rather than at a copy. One binary
-#     serves both the window and the command line, so this puts `snapshotter status`
-#     on PATH with no second download — and it must be the bundle's own executable,
-#     because Full Disk Access is granted to that bundle and a separate copy would be
-#     a different identity holding no grant.
+#   * There is deliberately NO `binary` stanza, even though the same binary serves
+#     both the window and the command line. This tap ships command-line tools as
+#     formulae, and a cask that symlinks one onto PATH is refused by its own CI. The
+#     CLI still exists inside the bundle, and putting it on PATH properly means a
+#     companion formula fed by its own release asset — the trove-cli / trove-desktop
+#     split.
 #
 #   * `uninstall launchctl:` stops both agents first. Without it launchd keeps
 #     starting a binary that is no longer there, failing on every interval and
@@ -37,7 +38,6 @@ cask "snapshotter" do
   depends_on macos: :monterey
 
   app "Snapshotter.app"
-  binary "#{appdir}/Snapshotter.app/Contents/MacOS/snapshotter"
 
   uninstall launchctl: [
               "com.christhomas.snapshotter",
@@ -62,6 +62,11 @@ cask "snapshotter" do
     alone is not enough: macOS checks Full Disk Access against the application making
     the call, so without the grant every attempt is refused with "Operation not
     permitted".
+
+    The same binary also works as a command-line tool, though this cask does not put
+    it on PATH:
+
+      /Applications/Snapshotter.app/Contents/MacOS/snapshotter status
 
     Snapshots are not a backup. They live on the same disk as your data and protect
     against deletion, not against the disk failing.
