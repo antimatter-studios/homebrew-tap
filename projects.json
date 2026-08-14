@@ -42,6 +42,13 @@
     "asset": "trove-{version}-{platform}.tar.gz",
     "platforms": ["darwin-arm64", "darwin-x86_64", "linux-arm64", "linux-x86_64"]
   },
+  "snapshotter": {
+    "repo": "antimatter-studios/snapshotter",
+    "tag_prefix": "v",
+    "formula": "Casks/snapshotter.rb",
+    "asset": "Snapshotter_{version}_{platform}.dmg",
+    "platforms": ["universal"]
+  },
   "trove-desktop": {
     "repo": "antimatter-studios/trove",
     "tag_prefix": "v",
