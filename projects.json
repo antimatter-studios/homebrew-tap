@@ -69,5 +69,10 @@
     "formula": "Formula/tacli.rb",
     "asset": "{name}_{version}_{platform}.tar.gz",
     "platforms": ["darwin_amd64", "darwin_arm64", "linux_amd64", "linux_arm64"]
+  },
+  "vertrag": {
+    "repo": "antimatter-studios/vertrag",
+    "tag_prefix": "v",
+    "formula": "Formula/vertrag.rb"
   }
 }
