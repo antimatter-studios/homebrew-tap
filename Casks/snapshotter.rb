@@ -8,12 +8,12 @@
 # Three choices here are deliberate, and are explained up here rather than beside the
 # stanzas because brew style requires stanzas in a group to be contiguous:
 #
-#   * There is deliberately NO `binary` stanza, even though the same binary serves
-#     both the window and the command line. This tap ships command-line tools as
-#     formulae, and a cask that symlinks one onto PATH is refused by its own CI. The
-#     CLI still exists inside the bundle, and putting it on PATH properly means a
-#     companion formula fed by its own release asset — the trove-cli / trove-desktop
-#     split.
+#   * `binary` symlinks the bundle's own executable onto PATH rather than installing
+#     a second copy. It is the same file, so the two can never report different
+#     versions — and, more importantly, it runs as the bundle. macOS attributes Full
+#     Disk Access to the executable making the call, so a separately installed copy
+#     would need its own grant before `snapshotter browse` could mount anything. This
+#     way the grant the user gives the application covers the command line too.
 #
 #   * `uninstall launchctl:` stops both agents first. Without it launchd keeps
 #     starting a binary that is no longer there, failing on every interval and
@@ -38,6 +38,7 @@ cask "snapshotter" do
   depends_on macos: :monterey
 
   app "Snapshotter.app"
+  binary "#{appdir}/Snapshotter.app/Contents/MacOS/snapshotter"
 
   uninstall launchctl: [
               "com.christhomas.snapshotter",
@@ -63,10 +64,11 @@ cask "snapshotter" do
     the call, so without the grant every attempt is refused with "Operation not
     permitted".
 
-    The same binary also works as a command-line tool, though this cask does not put
-    it on PATH:
+    The same binary is on PATH as `snapshotter`. It is symlinked into the bundle
+    rather than copied, so it runs with the application's identity and the Full Disk
+    Access granted above covers the command line too:
 
-      /Applications/Snapshotter.app/Contents/MacOS/snapshotter status
+      snapshotter status
 
     Snapshots are not a backup. They live on the same disk as your data and protect
     against deletion, not against the disk failing.

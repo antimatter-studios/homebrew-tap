@@ -221,7 +221,21 @@ jobs:
       #
       # Nothing quarantines what a formula installs, so a formula has neither
       # problem. An `app` bundle is a real cask; a bare binary is a formula.
-      - name: Command-line tools ship as formulae
+      #
+      # Both costs are costs of shipping a BARE binary. This rule used to read "no
+      # cask may contain a binary stanza", which is a different and larger claim: a
+      # cask that installs an application and also puts that application's own
+      # executable on PATH has neither problem. The bundle is Developer ID signed,
+      # notarized and stapled, so Gatekeeper does not refuse it, and such a cask is
+      # macOS-only, so Linux never sees the xattr call. It is what VS Code, Docker
+      # and every other app-with-a-CLI cask does.
+      #
+      # For an application whose privileged work is gated on Full Disk Access it is
+      # also the only sensible shape. macOS attributes that grant to the executable
+      # making the call, so a second copy of the binary installed by a formula would
+      # need its OWN grant before mounting worked. A symlink into the bundle means
+      # the grant already given to the application covers both ways of running it.
+      - name: A cask may ship an app with its CLI, but not a bare binary
         run: |
           set -euo pipefail
 
@@ -243,7 +257,15 @@ jobs:
               continue
             fi
 
-            echo "::error file=$f::$name ships a bare binary ($bins) as a cask; command-line tools in this tap are formulae — see Formula/chore.rb" >&2
+            # A binary stanza is fine when there is an app for it to belong to.
+            # What is refused is a cask that is ONLY a binary, which is the shape
+            # that gets quarantined and killed on first run.
+            if sed -nE 's/^[[:space:]]*app "([^"]+)".*/\1/p' "$f" | grep -q .; then
+              echo "  ok  $name puts its application's own executable on PATH"
+              continue
+            fi
+
+            echo "::error file=$f::$name ships a bare binary ($bins) as a cask with no app; a command-line tool on its own is a formula here — see Formula/chore.rb" >&2
             fail=1
           done
           [ "$fail" = 0 ]
