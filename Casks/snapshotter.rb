@@ -46,7 +46,12 @@ cask "snapshotter" do
             ],
             quit:      "com.christhomas.snapshotter"
 
+  # zap, not uninstall: `brew uninstall` leaves every one of these alone, which is
+  # why a reinstall keeps your schedule and your settings. Only `brew uninstall
+  # --zap` asks for all trace of it to be gone, and then the settings file has to
+  # go too — it moved to ~/.config in 0.3.0 and was being left behind.
   zap trash: [
+    "~/.config/snapshotter",
     "~/Library/Application Support/Snapshotter",
     "~/Library/LaunchAgents/com.christhomas.snapshotter.plist",
     "~/Library/LaunchAgents/com.christhomas.snapshotter.tripwire.plist",
