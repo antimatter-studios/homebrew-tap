@@ -4,9 +4,11 @@
     set-sha256.py <file> <platform-token> <sha256>
 
 The platform token (darwin-arm64, linux_amd64, …) is the string that appears in that
-platform's url line. The sha256 to replace is the one ADJACENT to it — casks put sha256
-before url, formulae after, and `brew style` enforces each, so neither order can be
-assumed.
+platform's url line. The sha256 to replace is the NEAREST one either side — casks put
+sha256 before url, formulae after, and `brew style` enforces each, so neither order can
+be assumed. Blank lines between the two are skipped: a cask that separates its
+version/sha256 pair from its url with one is still saying they belong together, and
+refusing it means the sync stops on a file that is perfectly ordinary.
 
 This replaced a `sed "/${platform}/{n;s|sha256 ...|}"` in tap-sync, which always took
 the line AFTER the url. Against a cask that rewrote the wrong line or none at all and
@@ -42,7 +44,12 @@ def main(argv):
         )
 
     i = urls[0]
-    for j in (i - 1, i + 1):
+    for step in (-1, 1):
+        j = i + step
+        # Past any blank lines, but no further: the first thing with content on
+        # either side must be the sha256, or this is not the stanza it looks like.
+        while 0 <= j < len(lines) and not lines[j].strip():
+            j += step
         if 0 <= j < len(lines) and re.search(r'sha256 "', lines[j]):
             lines[j] = re.sub(r'sha256 "[^"]*"', f'sha256 "{sha}"', lines[j])
             with open(path, "w") as fh:
