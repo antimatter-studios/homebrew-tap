@@ -51,7 +51,9 @@ class Vertrag < Formula
 
       Node.js is needed only if you use hook files.
 
-      OpenAPI 3 is supported today. OpenAPI 2 and API Blueprint are not yet.
+      OpenAPI 3 (including 3.1) and OpenAPI 2 (Swagger) are both supported.
+      API Blueprint is not, and is not planned: it needs a C parser, which
+      would cost the single static binary this is distributed as.
     EOS
   end
 
