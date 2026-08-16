@@ -6,8 +6,9 @@
   "qemu": "10.2.2",
   "snapshotter": "0.20.0",
   "tacli": "0.2.0",
-  "trove-cli": "0.7.0",
-  "trove-desktop": "0.7.0",
-  "vertrag": "0.1.0",
-  "virtiofsd": "1.13.8"
+  "trove-cli": "0.7.1",
+  "trove-desktop": "0.7.1",
+  "vertrag": "0.2.1",
+  "virtiofsd": "1.13.8",
+  "deionizer": "0.1.0"
 }
