@@ -4,7 +4,7 @@
   "dotman": "0.2.0",
   "instantmailcheck": "0.1.0",
   "qemu": "10.2.2",
-  "snapshotter": "0.24.0",
+  "snapshotter": "0.25.0",
   "tacli": "0.2.0",
   "trove-cli": "0.7.1",
   "trove-desktop": "0.7.1",
