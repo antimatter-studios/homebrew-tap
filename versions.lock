@@ -8,7 +8,7 @@
   "tacli": "0.2.0",
   "trove-cli": "0.7.1",
   "trove-desktop": "0.7.1",
-  "vertrag": "0.14.0",
+  "vertrag": "0.15.0",
   "virtiofsd": "1.13.8",
   "deionizer": "0.1.0"
 }
