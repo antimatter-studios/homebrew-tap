@@ -6,28 +6,28 @@
 class Vertrag < Formula
   desc "Contract-test an HTTP API against its OpenAPI description"
   homepage "https://github.com/antimatter-studios/vertrag"
-  version "0.11.0"
+  version "0.12.0"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/antimatter-studios/vertrag/releases/download/v#{version}/vertrag-#{version}-darwin-arm64.tar.gz"
-      sha256 "cfa33e34aa31d6bed53eac1fa31479a578a2d64ead996f51052b461b77983f1a"
+      sha256 "13c00139e4acdf0240ff0a55bdd3bcb939b79f4c8511a8dad60e9597a8d6eb8f"
     end
     on_intel do
       url "https://github.com/antimatter-studios/vertrag/releases/download/v#{version}/vertrag-#{version}-darwin-x86_64.tar.gz"
-      sha256 "0c1cac6747ec6a24175441cb5e524024afd1e11e6ccba6717b26de3815eff04b"
+      sha256 "db5b4b033789083e0761824948b8d475be07b620a9d92e8ec2b6598d39221444"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/antimatter-studios/vertrag/releases/download/v#{version}/vertrag-#{version}-linux-arm64.tar.gz"
-      sha256 "cb0079e683b6d6ad5b4b9d94e322c471a3d0077e4a6bc2abc386f90c2f270dab"
+      sha256 "1c048344b7adaa9802f23bda6708772af153aa76ca6574702961e354e84c35be"
     end
     on_intel do
       url "https://github.com/antimatter-studios/vertrag/releases/download/v#{version}/vertrag-#{version}-linux-x86_64.tar.gz"
-      sha256 "cca6ecc80c8368be15495f80cb7d5987e9f62716e8338a76828783765e099383"
+      sha256 "31c1bf6de5856a8cf523b65f290cc0b7c279627c194ec92e2aad122f4a37164c"
     end
   end
 
