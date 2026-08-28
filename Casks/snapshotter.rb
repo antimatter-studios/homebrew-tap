@@ -22,8 +22,8 @@
 #   * `caveats` covers Full Disk Access, which mounting a snapshot cannot work
 #     without and which no installer can grant on the user's behalf.
 cask "snapshotter" do
-  version "0.60.2"
-  sha256 "0d818e0e568c15c66751c24583bc25880dea4fd83fbf4dd3fdf70bfb66a70f1c"
+  version "0.61.0"
+  sha256 "14e844675a7e4414b4853a830fb8646721a9937168821b4f2b84f2d6944adcc3"
 
   url "https://github.com/antimatter-studios/snapshotter/releases/download/v#{version}/Snapshotter_#{version}_universal.dmg"
   name "Snapshotter"
