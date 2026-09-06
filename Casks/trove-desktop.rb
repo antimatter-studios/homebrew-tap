@@ -1,6 +1,6 @@
 cask "trove-desktop" do
-  version "0.8.0"
-  sha256 "362615bb9a088d2f2a222e3471d7cb5e762667cfd6542c570e71314e8aff8fda"
+  version "0.9.0"
+  sha256 "2e04e293c8cda931048c6d72786456e2d23ba1b4293d7bcb154e62c3dc18002a"
 
   url "https://github.com/antimatter-studios/trove/releases/download/v#{version}/TroveDesktop_#{version}_universal.dmg"
   name "Trove Desktop"
