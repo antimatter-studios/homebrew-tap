@@ -144,8 +144,18 @@ jobs:
               *)       flag=--formula ;;
             esac
 
+            # `--except=version` drops one check: that a `version` stanza is
+            # absent when Homebrew can scan the same version out of the URL.
+            # That is a homebrew-core submission convention, and this tap is not
+            # homebrew-core: every formula here declares `version` on purpose and
+            # interpolates it into per-arch URLs, which is also the one line
+            # tap-sync rewrites to publish a release. Enforcing the convention
+            # would mean hardcoding the version into three URLs per formula and
+            # teaching the sync to rewrite those instead — more moving parts, to
+            # remove a duplication that is doing useful work. Everything else
+            # audit checks (URLs resolve, checksums, licenses, style) still runs.
             echo "auditing: $name"
-            if ! brew audit "$flag" "$name"; then
+            if ! brew audit "$flag" --except=version "$name"; then
               echo "::error::brew audit rejected $name" >&2
               fail=1
             fi
