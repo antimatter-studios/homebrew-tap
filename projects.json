@@ -19,56 +19,90 @@
     "tag_prefix": "v",
     "formula": "Formula/deionizer.rb",
     "asset": "deionizer-{version}-{platform}.tar.gz",
-    "platforms": ["darwin-arm64", "darwin-x86_64", "linux-arm64", "linux-x86_64"]
+    "platforms": [
+      "darwin-arm64",
+      "darwin-x86_64",
+      "linux-arm64",
+      "linux-x86_64"
+    ]
   },
   "ddt": {
     "repo": "antimatter-studios/docker-dev-tools",
     "tag_prefix": "v",
     "formula": "Formula/ddt.rb",
     "asset": "{name}_{version}_{platform}.tar.gz",
-    "platforms": ["darwin_amd64", "darwin_arm64", "linux_amd64", "linux_arm64"]
+    "platforms": [
+      "darwin_amd64",
+      "darwin_arm64",
+      "linux_amd64",
+      "linux_arm64"
+    ]
   },
   "instantmailcheck": {
     "repo": "rest-mail/instantmailcheck",
     "tag_prefix": "v",
     "formula": "Formula/instantmailcheck.rb",
     "asset": "{name}_{version}_{platform}.tar.gz",
-    "platforms": ["darwin_amd64", "darwin_arm64", "linux_amd64", "linux_arm64"]
+    "platforms": [
+      "darwin_amd64",
+      "darwin_arm64",
+      "linux_amd64",
+      "linux_arm64"
+    ]
   },
   "trove-cli": {
     "repo": "antimatter-studios/trove",
     "tag_prefix": "v",
     "formula": "Formula/trove-cli.rb",
     "asset": "trove-{version}-{platform}.tar.gz",
-    "platforms": ["darwin-arm64", "darwin-x86_64", "linux-arm64", "linux-x86_64"]
+    "platforms": [
+      "darwin-arm64",
+      "darwin-x86_64",
+      "linux-arm64",
+      "linux-x86_64"
+    ]
   },
   "snapshotter": {
     "repo": "antimatter-studios/snapshotter",
     "tag_prefix": "v",
     "formula": "Casks/snapshotter.rb",
     "asset": "Snapshotter_{version}_{platform}.dmg",
-    "platforms": ["universal"]
+    "platforms": [
+      "universal"
+    ]
   },
   "trove-desktop": {
     "repo": "antimatter-studios/trove",
     "tag_prefix": "v",
     "formula": "Casks/trove-desktop.rb",
-    "asset": "TroveDesktop_{version}_{platform}.dmg",
-    "platforms": ["universal"]
+    "asset": "Trove_{version}_{platform}.dmg",
+    "platforms": [
+      "universal"
+    ]
   },
   "dotman": {
     "repo": "christhomas/dotman",
     "tag_prefix": "v",
     "formula": "Formula/dotman.rb",
     "asset": "{name}_{version}_{platform}.tar.gz",
-    "platforms": ["darwin_amd64", "darwin_arm64", "linux_amd64", "linux_arm64"]
+    "platforms": [
+      "darwin_amd64",
+      "darwin_arm64",
+      "linux_amd64",
+      "linux_arm64"
+    ]
   },
   "tacli": {
     "repo": "antimatter-studios/teamagentica",
     "tag_prefix": "v",
     "formula": "Formula/tacli.rb",
     "asset": "{name}_{version}_{platform}.tar.gz",
-    "platforms": ["darwin_amd64", "darwin_arm64", "linux_amd64", "linux_arm64"]
+    "platforms": [
+      "darwin_amd64",
+      "darwin_arm64",
+      "linux_amd64",
+      "linux_arm64"
+    ]
   },
   "vertrag": {
     "repo": "antimatter-studios/vertrag",
