@@ -22,28 +22,28 @@
 class Ddt < Formula
   desc "Docker development tools CLI"
   homepage "https://github.com/antimatter-studios/docker-dev-tools"
-  version "2.2.2"
+  version "2.3.0"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_darwin_arm64.tar.gz"
-      sha256 "16c46922982dc08223d27fe2fe8b2f7680f24e0f7c1aed0f90a1350ee1795c4a"
+      sha256 "d43eb50cf7eced10ab6f52b983f17fac6cd2772a52a8cf12720436db3b6ba5f3"
     end
     on_intel do
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_darwin_amd64.tar.gz"
-      sha256 "f03aac25acdce5f9818052a279a5df76cda18391382dcbfdd428d60e0f80f82e"
+      sha256 "18f9d9c8ca3f2ba75bd4a5b8d750fa9f90424d9098be1da17dee59ac736d5d20"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_linux_arm64.tar.gz"
-      sha256 "37a6f849ddd61f25e9609190d03f17c29011aacecb68459bb809b4ab5c86232e"
+      sha256 "36bdf1a70e5e78df73cab45561043e440b158eb50d2954687fb5e05a2e484622"
     end
     on_intel do
       url "https://github.com/antimatter-studios/docker-dev-tools/releases/download/v#{version}/ddt_#{version}_linux_amd64.tar.gz"
-      sha256 "836d0726c8b69ba073a8d43738a0cdffd750baa2b4b1d28751f161c06c6e227b"
+      sha256 "8ad1e515660b53fa69ea10254b204a2b93488882eed6042147d1b8c115250c2f"
     end
   end
 
