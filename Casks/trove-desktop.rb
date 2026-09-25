@@ -1,6 +1,6 @@
 cask "trove-desktop" do
-  version "0.19.0"
-  sha256 "568024af017bf227feb024bb0b97c378c1da0cc1f897066699984e8b140b1293"
+  version "0.20.0"
+  sha256 "2b64cf2dbf94436ca8ce31fa7bdd5251f0dd4858d4c7ad39139ee217a08eadc9"
 
   url "https://github.com/antimatter-studios/trove/releases/download/v#{version}/Trove_#{version}_universal.dmg"
   # The cask is called trove-desktop so it installs separately from the
