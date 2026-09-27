@@ -4,28 +4,28 @@
 class Chore < Formula
   desc "Task runner that reads chores.yml and gives tasks real arguments"
   homepage "https://github.com/antimatter-studios/chore"
-  version "0.11.0"
+  version "0.13.0"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/antimatter-studios/chore/releases/download/v#{version}/chore-#{version}-darwin-arm64.tar.gz"
-      sha256 "f15057391789b0e1946da9b6f08ffd1b2a98eda9ec753e4a11bac564f55ef2e4"
+      sha256 "3c732ed61606174a82799871344562468848693547b8b37fffd50a3dc848b485"
     end
     on_intel do
       url "https://github.com/antimatter-studios/chore/releases/download/v#{version}/chore-#{version}-darwin-x86_64.tar.gz"
-      sha256 "bd78231e780209566a24794cb131de5e9d4c2d23a256bce6e6f1ba53d67e7bea"
+      sha256 "7a972ff7789a48172bd2e18fb92793c25df3dd4ec81ecdf442090e84dcf9fe3a"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/antimatter-studios/chore/releases/download/v#{version}/chore-#{version}-linux-arm64.tar.gz"
-      sha256 "77c47ed2171ddc7542eb0f0c0dbf550ab41dfe370cebc3eb6900b18cb6552d3d"
+      sha256 "33d25ceaa0cec17d86b1be615a87b63c4f937bbb34526dd80b7fafa04e1c9f13"
     end
     on_intel do
       url "https://github.com/antimatter-studios/chore/releases/download/v#{version}/chore-#{version}-linux-x86_64.tar.gz"
-      sha256 "0616bf7f7e21f1b3b951161c35c56da17eb59fcb7e59e90f8aa8ef32f1f2ff2c"
+      sha256 "c7e005c53f3e1c79c92ba8e13891f13e77cba536b8c6d0f504665c4e7c24e5bf"
     end
   end
 
@@ -36,6 +36,8 @@ class Chore < Formula
   def caveats
     <<~EOS
       chore reads chores.yml from the current directory or any parent.
+
+      Release notes: https://github.com/antimatter-studios/chore/blob/v#{version}/CHANGELOG.md
 
       It reads go-task's file format, so an existing Taskfile.yml works after a
       rename — with a notice if you leave the old name in place, because the two
