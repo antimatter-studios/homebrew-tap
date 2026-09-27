@@ -9,8 +9,8 @@
 # and publishes it only after a verify job has checked that the downloaded app is
 # notarized. Apple Silicon only.
 cask "pullbar" do
-  version "0.4.2"
-  sha256 "3c1b8fb8158f4d7ee0998709fa650c9066b6a52fbac5b4d007bb0abd74cda8d7"
+  version "0.4.3"
+  sha256 "7b4c939d301541eecbda3330937ec173e9c4b374ce7d85213b240dde41c49ab7"
 
   url "https://github.com/christhomas/Pullbar/releases/download/v#{version}/pullbar-#{version}-darwin-arm64.zip"
   name "pullbar"
