@@ -11,8 +11,8 @@
 # caveats: releases are Developer ID signed but not yet notarized, so Gatekeeper still
 # asks on first launch. Remove the block once the release pipeline notarizes.
 cask "pullbar" do
-  version "0.3.0"
-  sha256 "d07f75bd28684a29ceb728ef63a030096cc9275f7758b41ff7261a8b9013c3d6"
+  version "0.4.0"
+  sha256 "e840d23d7bf227d9e60555e123567228a91f075a048509702e8e13afb6afd239"
 
   url "https://github.com/christhomas/Pullbar/releases/download/v#{version}/pullbar-#{version}-darwin-arm64.zip"
   name "pullbar"
