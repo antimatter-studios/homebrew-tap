@@ -37,6 +37,8 @@ class Chore < Formula
     <<~EOS
       chore reads chores.yml from the current directory or any parent.
 
+      Release notes: https://github.com/antimatter-studios/chore/blob/v#{version}/CHANGELOG.md
+
       It reads go-task's file format, so an existing Taskfile.yml works after a
       rename — with a notice if you leave the old name in place, because the two
       runners disagree about arguments.
