@@ -108,5 +108,14 @@
     "repo": "antimatter-studios/vertrag",
     "tag_prefix": "v",
     "formula": "Formula/vertrag.rb"
+  },
+  "pullbar": {
+    "repo": "christhomas/Pullbar",
+    "tag_prefix": "v",
+    "formula": "Casks/pullbar.rb",
+    "asset": "{name}-{version}-{platform}.zip",
+    "platforms": [
+      "darwin-arm64"
+    ]
   }
 }
