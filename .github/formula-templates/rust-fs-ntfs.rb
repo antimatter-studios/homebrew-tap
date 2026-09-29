@@ -24,19 +24,17 @@ class RustFsNtfs < Formula
   conflicts_with "ntfs-3g", because: "both install mkfs.ntfs"
 
   def install
-    bin.install "mkfs.ntfs"
+    # Every executable at the tarball's top level rather than one named file,
+    # so a release that adds a tool needs no change here; share/ (man pages,
+    # completions) is installed as-is once a release carries one.
+    bin.install Dir["*"].select { |f| File.file?(f) && File.executable?(f) }
+    prefix.install "share" if File.directory?("share")
   end
 
   def caveats
     <<~EOS
-      Installed with:
-        brew install antimatter-studios/tap/rust-fs-ntfs
-
-      mkfs.ntfs formats a block device or a pre-sized image file:
-        truncate -s 64M disk.img
-        mkfs.ntfs disk.img
-
-      `mkfs.ntfs --version` says "mkfs.ntfs (am-fs-ntfs) #{version}".
+      Installed by: brew install antimatter-studios/tap/rust-fs-ntfs
+      The mkfs.ntfs on your PATH is this one: `mkfs.ntfs --version` says "mkfs.ntfs (am-fs-ntfs) #{version}".
     EOS
   end
 

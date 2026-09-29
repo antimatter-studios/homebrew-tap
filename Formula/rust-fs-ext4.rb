@@ -22,22 +22,18 @@ class RustFsExt4 < Formula
   end
 
   def install
-    bin.install "mkfs.ext4"
+    # Every executable at the tarball's top level rather than one named file,
+    # so a release that adds a tool needs no change here; share/ (man pages,
+    # completions) is installed as-is once a release carries one.
+    bin.install Dir["*"].select { |f| File.file?(f) && File.executable?(f) }
+    prefix.install "share" if File.directory?("share")
   end
 
   def caveats
     <<~EOS
-      Installed with:
-        brew install antimatter-studios/tap/rust-fs-ext4
-
-      mkfs.ext4 formats a block device or a pre-sized image file:
-        truncate -s 64M disk.img
-        mkfs.ext4 disk.img
-
-      The mkfs.ext4 on your PATH is this one; `mkfs.ext4 --version` says
-      "mkfs.ext4 (fs-ext4) #{version}". Homebrew's e2fsprogs is keg-only, so
-      it never links its own mkfs.ext4 and both can be installed. The
-      e2fsprogs one stays reachable at:
+      Installed by: brew install antimatter-studios/tap/rust-fs-ext4
+      The mkfs.ext4 on your PATH is this one: `mkfs.ext4 --version` says "mkfs.ext4 (fs-ext4) #{version}".
+      e2fsprogs is keg-only, so its mkfs.ext4 stays at:
         $(brew --prefix e2fsprogs)/sbin/mkfs.ext4
     EOS
   end
