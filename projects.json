@@ -117,5 +117,25 @@
     "platforms": [
       "darwin-arm64"
     ]
+  },
+  "rust-fs-ext4": {
+    "repo": "christhomas/rust-fs-ext4",
+    "tag_prefix": "v",
+    "formula": "Formula/rust-fs-ext4.rb",
+    "asset": "am-fs-ext4-{version}-{platform}.tar.gz",
+    "platforms": [
+      "darwin-arm64",
+      "linux-x86_64"
+    ]
+  },
+  "rust-fs-ntfs": {
+    "repo": "christhomas/rust-fs-ntfs",
+    "tag_prefix": "v",
+    "formula": "Formula/rust-fs-ntfs.rb",
+    "asset": "am-fs-ntfs-{version}-{platform}.tar.gz",
+    "platforms": [
+      "darwin-arm64",
+      "linux-x86_64"
+    ]
   }
 }

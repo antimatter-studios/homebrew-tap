@@ -12,6 +12,29 @@
 #     PR from your own machine and squash-merge it — nothing reaches
 #     `brew install` users without a person doing both.
 #
+# ADDING A PROJECT. Its releases must attach one tarball per platform, named
+# as its projects.json `asset` template says, holding the binaries at the top
+# level. Then, in one pull request:
+#   * projects.json: repo, tag_prefix, formula, and `asset` + `platforms` for
+#     any naming other than <name>-<version>-<platform>.tar.gz on all four.
+#   * If it has released: Formula/<name>.rb, with real checksums, and its
+#     version in versions.lock -- the sync then keeps both current.
+#   * If it has not: .github/formula-templates/<name>.rb, the same formula
+#     with placeholder checksums and version "0.0.0", and nothing in
+#     versions.lock. The first sync after its first release creates
+#     Formula/<name>.rb from it. See rust-fs-ntfs.
+#   * A filesystem driver (rust-fs-*, rust-img-*) is named for its
+#     repository, and its formula is .github/driver-formula/template.rb with
+#     its own class name, desc, homepage, license, urls and the lines after
+#     the test's marker; CI refuses any other difference. Its release
+#     tarball is an install prefix (bin/, share/<repo>/CAVEATS, licence), so
+#     the formula names no tool. See rust-fs-ext4.
+#
+# BEFORE MERGING A SYNC, for each project it moved:
+#     .github/scripts/verify-release.sh <project> <version>
+# on the sync's branch. It checks every asset's sha256 against the formula,
+# and that the project's own release workflow attested building it.
+#
 # No secrets required: pushing an unprotected branch is within the default
 # token's `contents: write`. Opening a PR is the step a human does, so no token
 # here can propose a change to what brew installs.
@@ -65,6 +88,21 @@ jobs:
             if [ "$version" = "$current" ]; then
               echo "${name}: already at ${version}"
               continue
+            fi
+
+            # A project registered before its first release has no formula yet,
+            # because a formula cannot reach main without real checksums. It has
+            # a template instead, and its first release turns that into the
+            # formula here, like any later release updates it -- so adding a
+            # project is one pull request, made once, not one per release.
+            if [ ! -f "$formula" ]; then
+              template=".github/formula-templates/$(basename "$formula")"
+              if [ ! -f "$template" ]; then
+                echo "::error::${name}: neither ${formula} nor ${template} exists"
+                exit 1
+              fi
+              echo "${name}: first release; creating ${formula} from ${template}"
+              cp "$template" "$formula"
             fi
 
             full_tag="${prefix}${version}"
@@ -158,7 +196,13 @@ jobs:
             echo "### Branch pushed: \`${branch}\`"
             echo
             printf '%s\n' "$SUMMARY"
-            echo "Nothing is published yet. To review and publish:"
+            echo "Nothing is published yet. Before merging, run for each project above:"
+            echo
+            echo '```sh'
+            echo ".github/scripts/verify-release.sh <project> <version>"
+            echo '```'
+            echo
+            echo "To review and publish:"
             echo
             echo '```sh'
             echo "gh pr create --repo ${{ github.repository }} --base main --head ${branch} \\"
