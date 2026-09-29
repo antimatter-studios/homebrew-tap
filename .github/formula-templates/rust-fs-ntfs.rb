@@ -1,8 +1,9 @@
 # typed: false
 # frozen_string_literal: true
 
+# Its shape is .github/driver-formula/template.rb; CI checks it still is.
 class RustFsNtfs < Formula
-  desc "Pure-Rust NTFS filesystem tools, starting with mkfs.ntfs"
+  desc "Pure-Rust NTFS filesystem tools"
   homepage "https://github.com/christhomas/rust-fs-ntfs"
   version "0.0.0"
   license any_of: ["MIT", "Apache-2.0"]
@@ -21,31 +22,36 @@ class RustFsNtfs < Formula
     end
   end
 
-  conflicts_with "ntfs-3g", because: "both install mkfs.ntfs"
-
   def install
-    # Every executable at the tarball's top level rather than one named file,
-    # so a release that adds a tool needs no change here; share/ (man pages,
-    # completions) is installed as-is once a release carries one.
-    bin.install Dir["*"].select { |f| File.file?(f) && File.executable?(f) }
-    prefix.install "share" if File.directory?("share")
+    # A release made before the prefix layout ships its tools at the top
+    # level; they belong in bin/.
+    unless File.directory?("bin")
+      mkdir "bin"
+      mv Dir["*"].select { |f| File.file?(f) && File.executable?(f) }, "bin"
+    end
+    prefix.install Dir["*"]
   end
 
   def caveats
-    <<~EOS
-      Installed by: brew install antimatter-studios/tap/rust-fs-ntfs
-      The mkfs.ntfs on your PATH is this one: `mkfs.ntfs --version` says "mkfs.ntfs (am-fs-ntfs) #{version}".
-    EOS
+    notes = opt_prefix/"share/rust-fs-ntfs/CAVEATS"
+    notes.read if notes.exist?
   end
 
   test do
-    # Says which mkfs.ntfs this is, so it cannot be mistaken for ntfs-3g's.
-    assert_equal "mkfs.ntfs (am-fs-ntfs) #{version}", shell_output("#{bin}/mkfs.ntfs --version").strip
+    # Every tool names itself, its package and this version, so none can be
+    # mistaken for a same-named tool from another package.
+    tools = bin.children
+    refute_empty tools
+    tools.each do |tool|
+      name = Regexp.escape(tool.basename.to_s)
+      assert_match(/\A#{name} \(\S+\) #{Regexp.escape(version.to_s)}\Z/,
+                   shell_output("#{tool} --version").strip)
+    end
 
+    # Specific to this formula:
     image = testpath/"ntfs.img"
     File.open(image, "wb") { |f| f.truncate(16 * 1024 * 1024) }
     system bin/"mkfs.ntfs", "-q", image
-
     # The boot sector's OEM ID, and its end-of-sector signature.
     assert_equal "NTFS    ", File.binread(image, 8, 3)
     assert_equal "\x55\xAA".b, File.binread(image, 2, 510)

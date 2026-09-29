@@ -1,8 +1,9 @@
 # typed: false
 # frozen_string_literal: true
 
+# Its shape is .github/driver-formula/template.rb; CI checks it still is.
 class RustFsExt4 < Formula
-  desc "Pure-Rust ext4 filesystem tools, starting with mkfs.ext4"
+  desc "Pure-Rust ext4 filesystem tools"
   homepage "https://github.com/christhomas/rust-fs-ext4"
   version "0.5.1"
   license "MIT"
@@ -22,30 +23,35 @@ class RustFsExt4 < Formula
   end
 
   def install
-    # Every executable at the tarball's top level rather than one named file,
-    # so a release that adds a tool needs no change here; share/ (man pages,
-    # completions) is installed as-is once a release carries one.
-    bin.install Dir["*"].select { |f| File.file?(f) && File.executable?(f) }
-    prefix.install "share" if File.directory?("share")
+    # A release made before the prefix layout ships its tools at the top
+    # level; they belong in bin/.
+    unless File.directory?("bin")
+      mkdir "bin"
+      mv Dir["*"].select { |f| File.file?(f) && File.executable?(f) }, "bin"
+    end
+    prefix.install Dir["*"]
   end
 
   def caveats
-    <<~EOS
-      Installed by: brew install antimatter-studios/tap/rust-fs-ext4
-      The mkfs.ext4 on your PATH is this one: `mkfs.ext4 --version` says "mkfs.ext4 (fs-ext4) #{version}".
-      e2fsprogs is keg-only, so its mkfs.ext4 stays at:
-        $(brew --prefix e2fsprogs)/sbin/mkfs.ext4
-    EOS
+    notes = opt_prefix/"share/rust-fs-ext4/CAVEATS"
+    notes.read if notes.exist?
   end
 
   test do
-    # Says which mkfs.ext4 this is, so it cannot be mistaken for e2fsprogs'.
-    assert_equal "mkfs.ext4 (fs-ext4) #{version}", shell_output("#{bin}/mkfs.ext4 --version").strip
+    # Every tool names itself, its package and this version, so none can be
+    # mistaken for a same-named tool from another package.
+    tools = bin.children
+    refute_empty tools
+    tools.each do |tool|
+      name = Regexp.escape(tool.basename.to_s)
+      assert_match(/\A#{name} \(\S+\) #{Regexp.escape(version.to_s)}\Z/,
+                   shell_output("#{tool} --version").strip)
+    end
 
+    # Specific to this formula:
     image = testpath/"ext4.img"
     File.open(image, "wb") { |f| f.truncate(16 * 1024 * 1024) }
     system bin/"mkfs.ext4", "-q", image
-
     # The superblock starts 1024 bytes in, and s_magic is 56 bytes into it.
     assert_equal 0xEF53, File.binread(image, 2, 1080).unpack1("v")
   end

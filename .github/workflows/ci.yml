@@ -73,7 +73,7 @@ jobs:
       - name: Ruby syntax
         run: |
           set -euo pipefail
-          for f in Formula/*.rb Casks/*.rb .github/formula-templates/*.rb; do
+          for f in Formula/*.rb Casks/*.rb .github/formula-templates/*.rb .github/driver-formula/template.rb; do
             [ -e "$f" ] || continue
             ruby -c "$f" >/dev/null && echo "  ok  $f"
           done
@@ -109,6 +109,9 @@ jobs:
             cp "$f" "$staged/"
             files+=("$staged/$(basename "$f")")
           done
+          # And the driver template every rust-fs-*/rust-img-* formula copies.
+          cp .github/driver-formula/template.rb "$staged/driver-name.rb"
+          files+=("$staged/driver-name.rb")
 
           if ! brew style "${files[@]}"; then
             echo "::error::brew style rejected a formula" >&2
@@ -223,6 +226,27 @@ jobs:
             echo "  ok  $name → $formula (${declared:-no version})"
           done
           [ "$fail" = 0 ]
+
+      # A driver's release tarball is an install prefix, so its formula names
+      # no tool and writes no caveats: it is .github/driver-formula/template.rb
+      # with its own name, urls and checksums. Anything else written here would
+      # drift from the release it installs.
+      - name: Driver formulae have the template's shape
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/check-driver-formulae.py
+
+          # A gate that cannot fail is no gate: a formula that installs a
+          # named tool instead of the tarball must be refused.
+          probe="$RUNNER_TEMP/drift/Formula"
+          mkdir -p "$probe"
+          sed 's|    prefix.install Dir\["\*"\]|    bin.install "mkfs.ext4"|' \
+            Formula/rust-fs-ext4.rb > "$probe/rust-fs-ext4.rb"
+          if python3 .github/scripts/check-driver-formulae.py "$probe/rust-fs-ext4.rb" 2>/dev/null; then
+            echo "::error::check-driver-formulae.py accepted a formula that differs from the template" >&2
+            exit 1
+          fi
+          echo "  ok  a drifted formula is refused"
 
       - name: No placeholder checksums
         run: |

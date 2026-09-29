@@ -23,6 +23,17 @@
 #     with placeholder checksums and version "0.0.0", and nothing in
 #     versions.lock. The first sync after its first release creates
 #     Formula/<name>.rb from it. See rust-fs-ntfs.
+#   * A filesystem driver (rust-fs-*, rust-img-*) is named for its
+#     repository, and its formula is .github/driver-formula/template.rb with
+#     its own class name, desc, homepage, license, urls and the lines after
+#     the test's marker; CI refuses any other difference. Its release
+#     tarball is an install prefix (bin/, share/<repo>/CAVEATS, licence), so
+#     the formula names no tool. See rust-fs-ext4.
+#
+# BEFORE MERGING A SYNC, for each project it moved:
+#     .github/scripts/verify-release.sh <project> <version>
+# on the sync's branch. It checks every asset's sha256 against the formula,
+# and that the project's own release workflow attested building it.
 #
 # No secrets required: pushing an unprotected branch is within the default
 # token's `contents: write`. Opening a PR is the step a human does, so no token
@@ -185,7 +196,13 @@ jobs:
             echo "### Branch pushed: \`${branch}\`"
             echo
             printf '%s\n' "$SUMMARY"
-            echo "Nothing is published yet. To review and publish:"
+            echo "Nothing is published yet. Before merging, run for each project above:"
+            echo
+            echo '```sh'
+            echo ".github/scripts/verify-release.sh <project> <version>"
+            echo '```'
+            echo
+            echo "To review and publish:"
             echo
             echo '```sh'
             echo "gh pr create --repo ${{ github.repository }} --base main --head ${branch} \\"
