@@ -4,28 +4,28 @@
 class TroveCli < Formula
   desc "KeePassXC-compatible secrets CLI (trove) + daemon (troved)"
   homepage "https://github.com/antimatter-studios/trove"
-  version "0.23.0"
+  version "0.24.0"
   license any_of: ["MIT", "Apache-2.0"]
 
   on_macos do
     on_arm do
       url "https://github.com/antimatter-studios/trove/releases/download/v#{version}/trove-#{version}-darwin-arm64.tar.gz"
-      sha256 "c0243c7b41419e90e4eb3eb983e371b9e417a92ad1803737fdf1632f474eb97a"
+      sha256 "8ca0ed6cadab091be9bfc2fcddf6a9b03c1fff99e870f58bbd94af5052cb128b"
     end
     on_intel do
       url "https://github.com/antimatter-studios/trove/releases/download/v#{version}/trove-#{version}-darwin-x86_64.tar.gz"
-      sha256 "692cb21a8bc1aa34fcd1f6f2d36e8d7a5a04d2ba47009bc1d6705b267207b110"
+      sha256 "e063a4e8d6532270ea64524362f4aa0a44ea9271625d046708c080efd4c07bad"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/antimatter-studios/trove/releases/download/v#{version}/trove-#{version}-linux-arm64.tar.gz"
-      sha256 "b071b07284efdaf26d025197e3fa4a68b0514d849e1aa1e673713e972f172019"
+      sha256 "7cf16b9f308f69638f570bf84853a69f26aceb982e60aa876e924f038c0312fc"
     end
     on_intel do
       url "https://github.com/antimatter-studios/trove/releases/download/v#{version}/trove-#{version}-linux-x86_64.tar.gz"
-      sha256 "d622308df72442e80a695df52e6d55911d7640ca538ae86227a2903a99cdee15"
+      sha256 "245bf5d93a298b698607eeee475c4a58ded5ff455713073caff7bc57df5033cf"
     end
   end
 
