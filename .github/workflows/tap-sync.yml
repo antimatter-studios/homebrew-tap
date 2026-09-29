@@ -12,6 +12,18 @@
 #     PR from your own machine and squash-merge it — nothing reaches
 #     `brew install` users without a person doing both.
 #
+# ADDING A PROJECT. Its releases must attach one tarball per platform, named
+# as its projects.json `asset` template says, holding the binaries at the top
+# level. Then, in one pull request:
+#   * projects.json: repo, tag_prefix, formula, and `asset` + `platforms` for
+#     any naming other than <name>-<version>-<platform>.tar.gz on all four.
+#   * If it has released: Formula/<name>.rb, with real checksums, and its
+#     version in versions.lock -- the sync then keeps both current.
+#   * If it has not: .github/formula-templates/<name>.rb, the same formula
+#     with placeholder checksums and version "0.0.0", and nothing in
+#     versions.lock. The first sync after its first release creates
+#     Formula/<name>.rb from it. See rust-fs-ntfs.
+#
 # No secrets required: pushing an unprotected branch is within the default
 # token's `contents: write`. Opening a PR is the step a human does, so no token
 # here can propose a change to what brew installs.
@@ -65,6 +77,21 @@ jobs:
             if [ "$version" = "$current" ]; then
               echo "${name}: already at ${version}"
               continue
+            fi
+
+            # A project registered before its first release has no formula yet,
+            # because a formula cannot reach main without real checksums. It has
+            # a template instead, and its first release turns that into the
+            # formula here, like any later release updates it -- so adding a
+            # project is one pull request, made once, not one per release.
+            if [ ! -f "$formula" ]; then
+              template=".github/formula-templates/$(basename "$formula")"
+              if [ ! -f "$template" ]; then
+                echo "::error::${name}: neither ${formula} nor ${template} exists"
+                exit 1
+              fi
+              echo "${name}: first release; creating ${formula} from ${template}"
+              cp "$template" "$formula"
             fi
 
             full_tag="${prefix}${version}"
