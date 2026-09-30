@@ -147,5 +147,25 @@
       "darwin-arm64",
       "linux-x86_64"
     ]
+  },
+  "rust-img-qcow2": {
+    "repo": "antimatter-studios/rust-img-qcow2",
+    "tag_prefix": "v",
+    "formula": "Formula/rust-img-qcow2.rb",
+    "asset": "am-img-qcow2-{version}-{platform}.tar.gz",
+    "platforms": [
+      "darwin-arm64",
+      "linux-x86_64"
+    ]
+  },
+  "rust-img-vhd": {
+    "repo": "antimatter-studios/rust-img-vhd",
+    "tag_prefix": "v",
+    "formula": "Formula/rust-img-vhd.rb",
+    "asset": "am-img-vhd-{version}-{platform}.tar.gz",
+    "platforms": [
+      "darwin-arm64",
+      "linux-x86_64"
+    ]
   }
 }
