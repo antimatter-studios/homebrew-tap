@@ -137,5 +137,15 @@
       "darwin-arm64",
       "linux-x86_64"
     ]
+  },
+  "rust-fs-squashfs": {
+    "repo": "antimatter-studios/rust-fs-squashfs",
+    "tag_prefix": "v",
+    "formula": "Formula/rust-fs-squashfs.rb",
+    "asset": "am-fs-squashfs-{version}-{platform}.tar.gz",
+    "platforms": [
+      "darwin-arm64",
+      "linux-x86_64"
+    ]
   }
 }
