@@ -13,5 +13,6 @@
   "deionizer": "0.1.0",
   "pullbar": "0.4.3",
   "rust-fs-ext4": "0.5.1",
-  "rust-fs-squashfs": "0.3.0"
+  "rust-fs-squashfs": "0.3.0",
+  "rust-fs-ntfs": "0.6.0"
 }
