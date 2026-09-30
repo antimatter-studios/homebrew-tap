@@ -167,5 +167,15 @@
       "darwin-arm64",
       "linux-x86_64"
     ]
+  },
+  "rust-fs-erofs": {
+    "repo": "antimatter-studios/rust-fs-erofs",
+    "tag_prefix": "v",
+    "formula": "Formula/rust-fs-erofs.rb",
+    "asset": "am-fs-erofs-{version}-{platform}.tar.gz",
+    "platforms": [
+      "darwin-arm64",
+      "linux-x86_64"
+    ]
   }
 }
