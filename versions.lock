@@ -12,5 +12,6 @@
   "virtiofsd": "1.13.8",
   "deionizer": "0.1.0",
   "pullbar": "0.4.3",
-  "rust-fs-ext4": "0.5.1"
+  "rust-fs-ext4": "0.5.1",
+  "rust-fs-squashfs": "0.3.0"
 }
