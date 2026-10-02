@@ -197,5 +197,15 @@
       "darwin-arm64",
       "linux-x86_64"
     ]
+  },
+  "rust-img-vhdx": {
+    "repo": "antimatter-studios/rust-img-vhdx",
+    "tag_prefix": "v",
+    "formula": "Formula/rust-img-vhdx.rb",
+    "asset": "am-img-vhdx-{version}-{platform}.tar.gz",
+    "platforms": [
+      "darwin-arm64",
+      "linux-x86_64"
+    ]
   }
 }
