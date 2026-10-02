@@ -168,6 +168,16 @@
       "linux-x86_64"
     ]
   },
+  "rust-img-vmdk": {
+    "repo": "antimatter-studios/rust-img-vmdk",
+    "tag_prefix": "v",
+    "formula": "Formula/rust-img-vmdk.rb",
+    "asset": "am-img-vmdk-{version}-{platform}.tar.gz",
+    "platforms": [
+      "darwin-arm64",
+      "linux-x86_64"
+    ]
+  },
   "rust-img-vhd": {
     "repo": "antimatter-studios/rust-img-vhd",
     "tag_prefix": "v",
