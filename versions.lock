@@ -9,7 +9,7 @@
   "trove-cli": "0.25.0",
   "trove-desktop": "0.24.0",
   "vertrag": "0.27.0",
-  "virtiofsd": "1.13.8",
+  "virtiofsd": "1.14.0",
   "deionizer": "0.1.0",
   "pullbar": "0.4.3",
   "rust-fs-ext4": "0.5.1",
