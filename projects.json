@@ -128,6 +128,16 @@
       "linux-x86_64"
     ]
   },
+  "rust-fs-xfs": {
+    "repo": "antimatter-studios/rust-fs-xfs",
+    "tag_prefix": "v",
+    "formula": "Formula/rust-fs-xfs.rb",
+    "asset": "am-fs-xfs-{version}-{platform}.tar.gz",
+    "platforms": [
+      "darwin-arm64",
+      "linux-x86_64"
+    ]
+  },
   "rust-fs-ntfs": {
     "repo": "christhomas/rust-fs-ntfs",
     "tag_prefix": "v",
