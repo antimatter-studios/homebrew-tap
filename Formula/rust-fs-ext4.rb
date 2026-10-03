@@ -5,20 +5,20 @@
 class RustFsExt4 < Formula
   desc "Pure-Rust ext4 filesystem tools"
   homepage "https://github.com/christhomas/rust-fs-ext4"
-  version "0.5.1"
+  version "0.7.1"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/christhomas/rust-fs-ext4/releases/download/v#{version}/am-fs-ext4-#{version}-darwin-arm64.tar.gz"
-      sha256 "81bc8220741c5a3b46e8d13f36ec2c862673637339199dd15a8a9664f3a4751d"
+      sha256 "05c9fb4ea855b4bd7a5a8d5e23533ca42d518905b6764a3ea012d0b10c4b7849"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/christhomas/rust-fs-ext4/releases/download/v#{version}/am-fs-ext4-#{version}-linux-x86_64.tar.gz"
-      sha256 "c79c105da26dc3a8923f96f4d11fa68ae6f29d490c27a68bda04b87f79d55c45"
+      sha256 "8bd757f7f914e914a53e7f23644bc8cd97294b6aff5693e1790f8f743f30048b"
     end
   end
 
