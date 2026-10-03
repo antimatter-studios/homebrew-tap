@@ -138,6 +138,16 @@
       "linux-x86_64"
     ]
   },
+  "rust-fs-btrfs": {
+    "repo": "antimatter-studios/rust-fs-btrfs",
+    "tag_prefix": "v",
+    "formula": "Formula/rust-fs-btrfs.rb",
+    "asset": "am-fs-btrfs-{version}-{platform}.tar.gz",
+    "platforms": [
+      "darwin-arm64",
+      "linux-x86_64"
+    ]
+  },
   "rust-fs-ntfs": {
     "repo": "christhomas/rust-fs-ntfs",
     "tag_prefix": "v",
