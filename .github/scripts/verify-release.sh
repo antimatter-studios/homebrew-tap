@@ -8,10 +8,15 @@
 # carries, this downloads the release asset and requires
 #
 #   1. its sha256 to be the one in the formula, and
-#   2. a build-provenance attestation for it, signed by the project's own
-#      .github/workflows/release.yml (`gh attestation verify
-#      --signer-workflow`), so the bytes were built by that workflow in that
-#      repository and not uploaded by hand.
+#   2. a build-provenance attestation for it, belonging to the project's
+#      repository (`gh attestation verify --repo`) and signed by one of
+#      SIGNERS (`--signer-workflow`), so the bytes were built by a known
+#      workflow for that repository and not uploaded by hand.
+#
+# SIGNERS is the project's own .github/workflows/release.yml, or the shared
+# reusable workflow rust-fs-core/.github/workflows/release-cli.yml: when a
+# called workflow does the attesting, it is the one recorded as the signer.
+# Any other signer is refused.
 #
 # The formula must already declare <version>: run this on the sync's branch.
 # A release made before its project attested its builds has no attestation
@@ -42,6 +47,7 @@ declared="$(sed -nE '/^  version "/{s/^  version "([^"]+)".*/\1/p;q;}' "$formula
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
 tag="${prefix}${version}"
+shared_signer="antimatter-studios/rust-fs-core/.github/workflows/release-cli.yml"
 fails=0
 checked=0
 
@@ -79,11 +85,20 @@ PY
         echo "  ok  $asset sha256 matches $formula"
     fi
 
-    if gh attestation verify "$work/$asset" --repo "$repo" \
-        --signer-workflow "$repo/.github/workflows/release.yml" >/dev/null 2>"$work/attest.err"; then
-        echo "  ok  $asset was built by $repo/.github/workflows/release.yml"
+    signers=("$repo/.github/workflows/release.yml" "$shared_signer")
+    signed_by=""
+    : > "$work/attest.err"
+    for signer in "${signers[@]}"; do
+        if gh attestation verify "$work/$asset" --repo "$repo" \
+            --signer-workflow "$signer" >/dev/null 2>>"$work/attest.err"; then
+            signed_by="$signer"
+            break
+        fi
+    done
+    if [ -n "$signed_by" ]; then
+        echo "  ok  $asset was built by $signed_by"
     else
-        echo "FAIL $asset: no build-provenance attestation from $repo/.github/workflows/release.yml:" >&2
+        echo "FAIL $asset: no build-provenance attestation for $repo from ${signers[*]}:" >&2
         sed 's/^/       /' "$work/attest.err" >&2
         fails=$((fails + 1))
     fi
@@ -97,4 +112,4 @@ if [ "$fails" -gt 0 ]; then
     echo "verify-release: $project $version: $fails problem(s); do not merge" >&2
     exit 1
 fi
-echo "verify-release: $project $version: every asset matches its formula and was built by its release workflow"
+echo "verify-release: $project $version: every asset matches its formula and was built by a known release workflow"
