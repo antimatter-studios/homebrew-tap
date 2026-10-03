@@ -5,20 +5,20 @@
 class RustFsNtfs < Formula
   desc "Pure-Rust NTFS filesystem tools"
   homepage "https://github.com/christhomas/rust-fs-ntfs"
-  version "0.6.0"
+  version "0.7.0"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/christhomas/rust-fs-ntfs/releases/download/v#{version}/am-fs-ntfs-#{version}-darwin-arm64.tar.gz"
-      sha256 "58645f8be2a170b32df0a04ea2634e94260b744139cfa4255140720ffaa05596"
+      sha256 "5e2bfb1d910a4bc34b8f64b416637e9bfb24fd2963321c8511a39ea45e198285"
     end
   end
 
   on_linux do
     on_intel do
       url "https://github.com/christhomas/rust-fs-ntfs/releases/download/v#{version}/am-fs-ntfs-#{version}-linux-x86_64.tar.gz"
-      sha256 "209ba66518f1e71964427f7f4e9237f347fa61c0ec7ab92db7caabe63b9b4778"
+      sha256 "5cd8d8253b682fb66769529a32344745a96fd9dc67c99aec63a4e771c1c7205f"
     end
   end
 
