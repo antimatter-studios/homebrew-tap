@@ -61,6 +61,12 @@ jobs:
           fi
           echo "all action references are pinned"
 
+      # verify-release.sh is what stands between a release and a sync merge,
+      # so which attestation signers it accepts is checked here, against a
+      # stubbed gh: no network, no credentials.
+      - name: verify-release.sh accepts only the known signers
+        run: bash .github/scripts/test-verify-release.sh
+
   formulae:
     name: Formulae
     # macOS, because `brew` is only preinstalled on the macOS runners — this job
