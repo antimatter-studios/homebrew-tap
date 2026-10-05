@@ -217,5 +217,15 @@
       "darwin-arm64",
       "linux-x86_64"
     ]
+  },
+  "rust-lzo1x": {
+    "repo": "antimatter-studios/rust-lzo1x",
+    "tag_prefix": "v",
+    "formula": "Formula/rust-lzo1x.rb",
+    "asset": "am-lzo1x-{version}-{platform}.tar.gz",
+    "platforms": [
+      "darwin-arm64",
+      "linux-x86_64"
+    ]
   }
 }

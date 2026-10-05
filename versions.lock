@@ -21,5 +21,6 @@
   "rust-img-vmdk": "0.4.0",
   "rust-img-vhd": "0.5.1",
   "rust-fs-erofs": "0.3.0",
-  "rust-img-vhdx": "0.5.0"
+  "rust-img-vhdx": "0.5.0",
+  "rust-lzo1x": "0.3.1"
 }
