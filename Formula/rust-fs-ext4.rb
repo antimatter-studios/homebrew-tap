@@ -4,21 +4,21 @@
 # Its shape is .github/driver-formula/template.rb; CI checks it still is.
 class RustFsExt4 < Formula
   desc "Pure-Rust ext4 filesystem tools"
-  homepage "https://github.com/christhomas/rust-fs-ext4"
-  version "0.7.1"
+  homepage "https://github.com/antimatter-studios/rust-fs-ext4"
+  version "0.8.0"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/christhomas/rust-fs-ext4/releases/download/v#{version}/am-fs-ext4-#{version}-darwin-arm64.tar.gz"
-      sha256 "05c9fb4ea855b4bd7a5a8d5e23533ca42d518905b6764a3ea012d0b10c4b7849"
+      url "https://github.com/antimatter-studios/rust-fs-ext4/releases/download/v#{version}/rust-fs-ext4-#{version}-darwin-arm64.tar.gz"
+      sha256 "5fcd975241efda71363148671cefc8215a7f8ac696dc9afb21249dc06e625e62"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/christhomas/rust-fs-ext4/releases/download/v#{version}/am-fs-ext4-#{version}-linux-x86_64.tar.gz"
-      sha256 "8bd757f7f914e914a53e7f23644bc8cd97294b6aff5693e1790f8f743f30048b"
+      url "https://github.com/antimatter-studios/rust-fs-ext4/releases/download/v#{version}/rust-fs-ext4-#{version}-linux-x86_64.tar.gz"
+      sha256 "92624da60b1ebccab23f71e37ffb4cbd96353eb29847820d5cc4a2fcd3ffb61f"
     end
   end
 

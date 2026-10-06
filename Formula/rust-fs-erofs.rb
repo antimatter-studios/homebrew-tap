@@ -5,20 +5,20 @@
 class RustFsErofs < Formula
   desc "Pure-Rust EROFS filesystem tools"
   homepage "https://github.com/antimatter-studios/rust-fs-erofs"
-  version "0.3.0"
+  version "0.4.0"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/antimatter-studios/rust-fs-erofs/releases/download/v#{version}/am-fs-erofs-#{version}-darwin-arm64.tar.gz"
-      sha256 "90c955dd0c62356052983aea1d75e12ac5b819c2ba345823c8e76dfc4b55e8c5"
+      url "https://github.com/antimatter-studios/rust-fs-erofs/releases/download/v#{version}/rust-fs-erofs-#{version}-darwin-arm64.tar.gz"
+      sha256 "7328c0231c3b9bc25f6610718bdcc2cacf38f94101be214bbc8630d27e0bf145"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/antimatter-studios/rust-fs-erofs/releases/download/v#{version}/am-fs-erofs-#{version}-linux-x86_64.tar.gz"
-      sha256 "c3e8405a5786c09f9efc29d1017f87da3a9804eea5e143e163db3784e6970add"
+      url "https://github.com/antimatter-studios/rust-fs-erofs/releases/download/v#{version}/rust-fs-erofs-#{version}-linux-x86_64.tar.gz"
+      sha256 "9f33a6f6cac50f5fbc616ea4fe70207c98b48519b4cf743c99e2dcf2a9f2e82a"
     end
   end
 

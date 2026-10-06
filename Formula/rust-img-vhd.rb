@@ -5,20 +5,20 @@
 class RustImgVhd < Formula
   desc "Pure-Rust VHD disk image tools"
   homepage "https://github.com/antimatter-studios/rust-img-vhd"
-  version "0.5.1"
+  version "0.6.0"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/antimatter-studios/rust-img-vhd/releases/download/v#{version}/am-img-vhd-#{version}-darwin-arm64.tar.gz"
-      sha256 "8a3c9ebab2d163813c81bcc8cc23c9f346db5924e8e96a5cdf4da9b0539874e8"
+      url "https://github.com/antimatter-studios/rust-img-vhd/releases/download/v#{version}/rust-img-vhd-#{version}-darwin-arm64.tar.gz"
+      sha256 "2e750739673cfc539d3eb69d3058772fb93f874d08846c519cdf0b076d366a14"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/antimatter-studios/rust-img-vhd/releases/download/v#{version}/am-img-vhd-#{version}-linux-x86_64.tar.gz"
-      sha256 "f5fe9c50e533d0dd2201dd782d2e399143acc5797eb6cba89454365cc522f108"
+      url "https://github.com/antimatter-studios/rust-img-vhd/releases/download/v#{version}/rust-img-vhd-#{version}-linux-x86_64.tar.gz"
+      sha256 "b092e974a55cfef8130b7a7dbecf3ed2dce89957796d5d4bd44d6d860f4ffd90"
     end
   end
 
