@@ -5,20 +5,20 @@
 class RustImgQcow2 < Formula
   desc "Pure-Rust QCOW2 disk image tools"
   homepage "https://github.com/antimatter-studios/rust-img-qcow2"
-  version "0.5.1"
+  version "0.6.0"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/antimatter-studios/rust-img-qcow2/releases/download/v#{version}/am-img-qcow2-#{version}-darwin-arm64.tar.gz"
-      sha256 "6f0296eecd65abc09ec80e7577b0da211dfa9ced48b0493e0fd17d4b987dbf55"
+      url "https://github.com/antimatter-studios/rust-img-qcow2/releases/download/v#{version}/rust-img-qcow2-#{version}-darwin-arm64.tar.gz"
+      sha256 "3d5d0da88bb888d4c6f3f9f124c4b5344e197c91f2b1a4d06f47846787aced52"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/antimatter-studios/rust-img-qcow2/releases/download/v#{version}/am-img-qcow2-#{version}-linux-x86_64.tar.gz"
-      sha256 "ef4872c37905551434cb93929f4babd95a95dbd384b43adc00ce82c5f5501d35"
+      url "https://github.com/antimatter-studios/rust-img-qcow2/releases/download/v#{version}/rust-img-qcow2-#{version}-linux-x86_64.tar.gz"
+      sha256 "7343e552f95a4c07418db4b523115e25bb703d052a70b9cffb64718f75868b84"
     end
   end
 

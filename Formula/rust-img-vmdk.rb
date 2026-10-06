@@ -5,20 +5,20 @@
 class RustImgVmdk < Formula
   desc "Pure-Rust VMDK disk image tools"
   homepage "https://github.com/antimatter-studios/rust-img-vmdk"
-  version "0.4.0"
+  version "0.5.0"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/antimatter-studios/rust-img-vmdk/releases/download/v#{version}/am-img-vmdk-#{version}-darwin-arm64.tar.gz"
-      sha256 "583bd476e5008ef0f385f4568afab3f0599b912deb2388a46296dc09eeb7b0d2"
+      url "https://github.com/antimatter-studios/rust-img-vmdk/releases/download/v#{version}/rust-img-vmdk-#{version}-darwin-arm64.tar.gz"
+      sha256 "77daa2e8420ed300e400b1f58b4c5d116a09cff5e91450b0bca6783c2aea9479"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/antimatter-studios/rust-img-vmdk/releases/download/v#{version}/am-img-vmdk-#{version}-linux-x86_64.tar.gz"
-      sha256 "5c24fb473a4236b658b9ac07005d44bfe174a4f067193252ed7b2bf9857cdd9d"
+      url "https://github.com/antimatter-studios/rust-img-vmdk/releases/download/v#{version}/rust-img-vmdk-#{version}-linux-x86_64.tar.gz"
+      sha256 "3062a89a12e0952f485d0cabc372a5bad0d6782bcdaba1432cca1a1a8890170c"
     end
   end
 

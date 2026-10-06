@@ -5,20 +5,20 @@
 class RustFsSquashfs < Formula
   desc "Pure-Rust SquashFS filesystem tools"
   homepage "https://github.com/antimatter-studios/rust-fs-squashfs"
-  version "0.3.0"
+  version "0.4.0"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/antimatter-studios/rust-fs-squashfs/releases/download/v#{version}/am-fs-squashfs-#{version}-darwin-arm64.tar.gz"
-      sha256 "75064f3b71ee5f906138ccf236b62561a553619fec043bbd66f7f82f6620d7f3"
+      url "https://github.com/antimatter-studios/rust-fs-squashfs/releases/download/v#{version}/rust-fs-squashfs-#{version}-darwin-arm64.tar.gz"
+      sha256 "086cd289fcb80f2261b4392a202f3c6b15c4e5beea88bee1143950e8a35038cb"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/antimatter-studios/rust-fs-squashfs/releases/download/v#{version}/am-fs-squashfs-#{version}-linux-x86_64.tar.gz"
-      sha256 "be9bcfc060bdc05b25d2c557bbb7f7b397bf537a9b255fe97ef22387a421d048"
+      url "https://github.com/antimatter-studios/rust-fs-squashfs/releases/download/v#{version}/rust-fs-squashfs-#{version}-linux-x86_64.tar.gz"
+      sha256 "8b550dc5717f54b65b313c92f628b61eed2847c9ee1c39fa4ceea71a99793986"
     end
   end
 

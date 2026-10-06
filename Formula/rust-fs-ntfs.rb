@@ -4,21 +4,21 @@
 # Its shape is .github/driver-formula/template.rb; CI checks it still is.
 class RustFsNtfs < Formula
   desc "Pure-Rust NTFS filesystem tools"
-  homepage "https://github.com/christhomas/rust-fs-ntfs"
-  version "0.7.0"
+  homepage "https://github.com/antimatter-studios/rust-fs-ntfs"
+  version "0.9.0"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/christhomas/rust-fs-ntfs/releases/download/v#{version}/am-fs-ntfs-#{version}-darwin-arm64.tar.gz"
-      sha256 "5e2bfb1d910a4bc34b8f64b416637e9bfb24fd2963321c8511a39ea45e198285"
+      url "https://github.com/antimatter-studios/rust-fs-ntfs/releases/download/v#{version}/rust-fs-ntfs-#{version}-darwin-arm64.tar.gz"
+      sha256 "23d13a665da616e85484c24567d3cd7c5d82ddb7f9de68f5f486d75d2661bf85"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/christhomas/rust-fs-ntfs/releases/download/v#{version}/am-fs-ntfs-#{version}-linux-x86_64.tar.gz"
-      sha256 "5cd8d8253b682fb66769529a32344745a96fd9dc67c99aec63a4e771c1c7205f"
+      url "https://github.com/antimatter-studios/rust-fs-ntfs/releases/download/v#{version}/rust-fs-ntfs-#{version}-linux-x86_64.tar.gz"
+      sha256 "0d5771a31e5ae5c2409a2badb2ac415f3600c173736a1c242baa6f36cfb5bcdb"
     end
   end
 

@@ -119,10 +119,10 @@
     ]
   },
   "rust-fs-ext4": {
-    "repo": "christhomas/rust-fs-ext4",
+    "repo": "antimatter-studios/rust-fs-ext4",
     "tag_prefix": "v",
     "formula": "Formula/rust-fs-ext4.rb",
-    "asset": "am-fs-ext4-{version}-{platform}.tar.gz",
+    "asset": "rust-fs-ext4-{version}-{platform}.tar.gz",
     "platforms": [
       "darwin-arm64",
       "linux-x86_64"
@@ -149,10 +149,10 @@
     ]
   },
   "rust-fs-ntfs": {
-    "repo": "christhomas/rust-fs-ntfs",
+    "repo": "antimatter-studios/rust-fs-ntfs",
     "tag_prefix": "v",
     "formula": "Formula/rust-fs-ntfs.rb",
-    "asset": "am-fs-ntfs-{version}-{platform}.tar.gz",
+    "asset": "rust-fs-ntfs-{version}-{platform}.tar.gz",
     "platforms": [
       "darwin-arm64",
       "linux-x86_64"
@@ -162,7 +162,7 @@
     "repo": "antimatter-studios/rust-fs-squashfs",
     "tag_prefix": "v",
     "formula": "Formula/rust-fs-squashfs.rb",
-    "asset": "am-fs-squashfs-{version}-{platform}.tar.gz",
+    "asset": "rust-fs-squashfs-{version}-{platform}.tar.gz",
     "platforms": [
       "darwin-arm64",
       "linux-x86_64"
@@ -172,7 +172,7 @@
     "repo": "antimatter-studios/rust-img-qcow2",
     "tag_prefix": "v",
     "formula": "Formula/rust-img-qcow2.rb",
-    "asset": "am-img-qcow2-{version}-{platform}.tar.gz",
+    "asset": "rust-img-qcow2-{version}-{platform}.tar.gz",
     "platforms": [
       "darwin-arm64",
       "linux-x86_64"
@@ -182,7 +182,7 @@
     "repo": "antimatter-studios/rust-img-vmdk",
     "tag_prefix": "v",
     "formula": "Formula/rust-img-vmdk.rb",
-    "asset": "am-img-vmdk-{version}-{platform}.tar.gz",
+    "asset": "rust-img-vmdk-{version}-{platform}.tar.gz",
     "platforms": [
       "darwin-arm64",
       "linux-x86_64"
@@ -192,7 +192,7 @@
     "repo": "antimatter-studios/rust-img-vhd",
     "tag_prefix": "v",
     "formula": "Formula/rust-img-vhd.rb",
-    "asset": "am-img-vhd-{version}-{platform}.tar.gz",
+    "asset": "rust-img-vhd-{version}-{platform}.tar.gz",
     "platforms": [
       "darwin-arm64",
       "linux-x86_64"
@@ -202,7 +202,7 @@
     "repo": "antimatter-studios/rust-fs-erofs",
     "tag_prefix": "v",
     "formula": "Formula/rust-fs-erofs.rb",
-    "asset": "am-fs-erofs-{version}-{platform}.tar.gz",
+    "asset": "rust-fs-erofs-{version}-{platform}.tar.gz",
     "platforms": [
       "darwin-arm64",
       "linux-x86_64"
@@ -212,7 +212,7 @@
     "repo": "antimatter-studios/rust-img-vhdx",
     "tag_prefix": "v",
     "formula": "Formula/rust-img-vhdx.rb",
-    "asset": "am-img-vhdx-{version}-{platform}.tar.gz",
+    "asset": "rust-img-vhdx-{version}-{platform}.tar.gz",
     "platforms": [
       "darwin-arm64",
       "linux-x86_64"
@@ -222,7 +222,7 @@
     "repo": "antimatter-studios/rust-lzo1x",
     "tag_prefix": "v",
     "formula": "Formula/rust-lzo1x.rb",
-    "asset": "am-lzo1x-{version}-{platform}.tar.gz",
+    "asset": "rust-lzo1x-{version}-{platform}.tar.gz",
     "platforms": [
       "darwin-arm64",
       "linux-x86_64"
