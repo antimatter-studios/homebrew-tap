@@ -5,20 +5,20 @@
 class RustFsXfs < Formula
   desc "Pure-Rust XFS filesystem tools"
   homepage "https://github.com/antimatter-studios/rust-fs-xfs"
-  version "0.10.0"
+  version "0.12.1"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/antimatter-studios/rust-fs-xfs/releases/download/v#{version}/am-fs-xfs-#{version}-darwin-arm64.tar.gz"
-      sha256 "7e463d1f997aa43c218e7b8b5a11deaba6df536e879dfc3ac4b1588065359089"
+      url "https://github.com/antimatter-studios/rust-fs-xfs/releases/download/v#{version}/rust-fs-xfs-#{version}-darwin-arm64.tar.gz"
+      sha256 "7c8f53af41a9a72f5a7d43d82a63acfcbbb911221a6a4aa058879559f27df705"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/antimatter-studios/rust-fs-xfs/releases/download/v#{version}/am-fs-xfs-#{version}-linux-x86_64.tar.gz"
-      sha256 "ee589d831f2a92fd9a21a58fa280e0a4fa572bc945bc71fe8473cc00d740aeba"
+      url "https://github.com/antimatter-studios/rust-fs-xfs/releases/download/v#{version}/rust-fs-xfs-#{version}-linux-x86_64.tar.gz"
+      sha256 "2cbc13b3a98eafbafb4f71b7324db3148d0128261728a00169fea4ff9faed727"
     end
   end
 
