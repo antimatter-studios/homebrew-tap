@@ -5,20 +5,20 @@
 class RustFsBtrfs < Formula
   desc "Pure-Rust Btrfs filesystem tools"
   homepage "https://github.com/antimatter-studios/rust-fs-btrfs"
-  version "0.8.1"
+  version "0.10.2"
   license "MIT"
 
   on_macos do
     on_arm do
-      url "https://github.com/antimatter-studios/rust-fs-btrfs/releases/download/v#{version}/am-fs-btrfs-#{version}-darwin-arm64.tar.gz"
-      sha256 "c56703b79248732cc3ac67b81d02cd3217e03584822a95a6162d71d50369f041"
+      url "https://github.com/antimatter-studios/rust-fs-btrfs/releases/download/v#{version}/rust-fs-btrfs-#{version}-darwin-arm64.tar.gz"
+      sha256 "23a167280deb250a10fef40c3d8319f6533e492bfd7971c6750f1048a71ae788"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/antimatter-studios/rust-fs-btrfs/releases/download/v#{version}/am-fs-btrfs-#{version}-linux-x86_64.tar.gz"
-      sha256 "73dbf37a54d1bfb1fe13dfdf843762211b0f658ea34d01bb83e5706b0524f425"
+      url "https://github.com/antimatter-studios/rust-fs-btrfs/releases/download/v#{version}/rust-fs-btrfs-#{version}-linux-x86_64.tar.gz"
+      sha256 "49c214ea50b89624ddf112548e31aec3966a49f5dc90946b7eb6961bec678b9a"
     end
   end
 
