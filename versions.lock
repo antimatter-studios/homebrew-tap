@@ -22,5 +22,6 @@
   "rust-img-vhd": "0.6.0",
   "rust-fs-erofs": "0.4.0",
   "rust-img-vhdx": "0.6.0",
-  "rust-lzo1x": "0.4.0"
+  "rust-lzo1x": "0.4.0",
+  "restmail": "0.5.0"
 }
