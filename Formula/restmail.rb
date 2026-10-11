@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 class Restmail < Formula
-  desc "Claim and run a rest-mail server from the command line"
+  desc "Claim and run a rest-mail server over its public API"
   homepage "https://github.com/rest-mail/rest-mail-server"
   version "0.5.0"
   license "MIT"
