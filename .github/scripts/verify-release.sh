@@ -63,8 +63,13 @@ for platform in $platforms; do
 import re, sys
 lines = open(sys.argv[1]).read().split("\n")
 i = next(i for i, l in enumerate(lines) if sys.argv[2] in l and "url " in l)
-for j in (i - 1, i + 1):
-    m = re.search(r'sha256 "([0-9a-f]{64})"', lines[j])
+for step in (-1, 1):
+    j = i + step
+    # Past blank lines, as set-sha256.py goes: a cask separates its sha256 and
+    # url stanzas with one, and brew style insists on it.
+    while 0 <= j < len(lines) and not lines[j].strip():
+        j += step
+    m = re.search(r'sha256 "([0-9a-f]{64})"', lines[j]) if 0 <= j < len(lines) else None
     if m:
         print(m.group(1))
         break
