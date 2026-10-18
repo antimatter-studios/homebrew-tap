@@ -113,6 +113,29 @@ for other in \
     fi
 done
 
+# A cask keeps a blank line between `sha256` and `url` (brew style's
+# Cask/StanzaGrouping), and set-sha256.py looks past it; so must this.
+cat > "$tap/Formula/example-tool.rb" <<RB
+cask "example-tool" do
+  version "1.2.3"
+  sha256 "$sum"
+
+  url "https://example.invalid/example-tool-#{version}-linux-x86_64.tar.gz"
+end
+RB
+if run "$repo" "$own"; then
+    ok "a sha256 separated from its url by a blank line is found"
+else
+    fail "a sha256 separated from its url by a blank line was not found:"; cat "$sandbox/out" >&2
+fi
+cat > "$tap/Formula/example-tool.rb" <<RB
+class ExampleTool < Formula
+  version "1.2.3"
+  url "https://example.invalid/example-tool-#{version}-linux-x86_64.tar.gz"
+  sha256 "$sum"
+end
+RB
+
 # The accepted signer, but the attestation belongs to another repository.
 if run "someone-else/example-tool" "$shared"; then
     fail "an attestation from another repository was accepted"

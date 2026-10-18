@@ -25,7 +25,7 @@ cask "diskcutter" do
   # The app itself runs on 10.13+, but :high_sierra has been removed from the
   # cask DSL; :catalina is the oldest symbol still accepted, and is already
   # older than any macOS Homebrew supports.
-  depends_on macos: :catalina
+  depends_on :macos
 
   app "Disk Cutter.app"
 
