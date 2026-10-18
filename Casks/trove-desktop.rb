@@ -1,7 +1,6 @@
 cask "trove-desktop" do
-  version "0.25.0"
-  sha256 "389dd2b24db77016366d508849c4da06c37e4fe862f2a921b7c5418eab9a9229"
-
+  version "0.26.1"
+  sha256 "03dffa6c5440c9ea6141ee3da9fe562879a179f72066563d23aede8d6f2432a9"
   url "https://github.com/antimatter-studios/trove/releases/download/v#{version}/Trove_#{version}_universal.dmg"
   # The cask is called trove-desktop so it installs separately from the
   # trove-cli formula. The APP is just Trove — that is what its bundle is
