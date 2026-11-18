@@ -149,6 +149,12 @@ jobs:
           mkdir -p "$(dirname "$tap_dir")"
           ln -sfn "$GITHUB_WORKSPACE" "$tap_dir"
           brew tap | sed 's/^/  tapped: /'
+          # Homebrew 7 refuses to load anything from a tap nobody has trusted
+          # ("Refusing to load formula ... from untrusted tap"), and the runner
+          # has never trusted this one, so audit rejected every file. Trusting
+          # the tap is the supported answer; HOMEBREW_NO_REQUIRE_TAP_TRUST is
+          # deprecated and due to be removed.
+          brew trust --tap antimatter-studios/tap
 
       - name: brew audit
         run: |
