@@ -24,7 +24,7 @@
 class Virtiofsd < Formula
   desc "Virtio-fs vhost-user device daemon (macOS port)"
   homepage "https://github.com/christhomas/virtiofsd"
-  version "1.14.0.1"
+  version "1.14.0.2"
   # Upstream's Cargo.toml says "Apache-2.0 AND BSD-3-Clause" — both apply at
   # once. This said any_of, which is Homebrew's spelling of OR and claimed a
   # choice between them that upstream does not offer. all_of is AND.
@@ -35,11 +35,11 @@ class Virtiofsd < Formula
   on_macos do
     on_arm do
       url "https://github.com/christhomas/virtiofsd/releases/download/v#{version}/virtiofsd-#{version}-darwin-arm64.tar.gz"
-      sha256 "2575b93a1496a119e5b94b0062e35abd72bf037bfbcf9ac92897069aab1517fe"
+      sha256 "aed9b7225b2466c46a5b1e82e187c48ddd47fc3b048e8c85d5adf3f40a92efed"
     end
     on_intel do
       url "https://github.com/christhomas/virtiofsd/releases/download/v#{version}/virtiofsd-#{version}-darwin-x86_64.tar.gz"
-      sha256 "08b4bd970e6ca58e4387389b69e293e22de22341332132f7e7d4dee23a57e141"
+      sha256 "ecf2f5fc7c942ee5475cd3b2845faa2ecd073a788b7b8635d7be86e361fec405"
     end
   end
 
