@@ -235,6 +235,26 @@ jobs:
               echo "$name: versions.lock says $locked but $formula declares $declared" >&2
               fail=1
             fi
+            # The sync and verify-release.sh build each asset's file name from
+            # projects.json, while brew downloads the formula's url. A release
+            # that renames its tarballs has to change both, or the next sync
+            # asks for a file the release does not have.
+            asset_template=$(jq -r --arg n "$name" \
+              '.[$n].asset // "{name}-{version}-{platform}.tar.gz"' projects.json)
+            platforms=$(jq -r --arg n "$name" \
+              '(.[$n].platforms // ["darwin-arm64","darwin-x86_64","linux-arm64","linux-x86_64"])[]' projects.json)
+            urls=$(sed -nE 's/^ *url "([^"]+)".*/\1/p' "$formula")
+            interpolation='#{version}'
+            for platform in $platforms; do
+              grep -q -- "$platform" "$formula" || continue
+              asset="${asset_template//\{name\}/$name}"
+              asset="${asset//\{version\}/$interpolation}"
+              asset="${asset//\{platform\}/$platform}"
+              if ! grep -qF -- "/${asset}" <<<"$urls"; then
+                echo "$name: projects.json names the asset $asset, but no url in $formula downloads it" >&2
+                fail=1
+              fi
+            done
             echo "  ok  $name → $formula (${declared:-no version})"
           done
           [ "$fail" = 0 ]
